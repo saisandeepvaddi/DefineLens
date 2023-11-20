@@ -8,14 +8,24 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var isARSessionActive = false
+
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            ARTextView(isActive: $isARSessionActive)
+                .edgesIgnoringSafeArea(.all)
+                .disabled(!isARSessionActive)
+
+            Button(action: {
+                isARSessionActive.toggle()
+            }) {
+                Text(isARSessionActive ? "Stop" : "Start")
+            }
+            .padding()
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .cornerRadius(10)
         }
-        .padding()
     }
 }
 
