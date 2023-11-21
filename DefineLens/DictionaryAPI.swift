@@ -7,7 +7,7 @@
 
 import Foundation
 
-func fetchDefinition(for word: String, completion: @escaping (String?) -> Void) {
+func fetchDefinition(for word: String, completion: @escaping (Data?) -> Void) {
     let urlString = "https://api.dictionaryapi.dev/api/v2/entries/en/\(word)"
     guard let url = URL(string: urlString) else {
         completion(nil)
@@ -15,20 +15,11 @@ func fetchDefinition(for word: String, completion: @escaping (String?) -> Void) 
     }
 
     let task = URLSession.shared.dataTask(with: url) { data, _, error in
-        print("data: ", data)
         guard let data = data, error == nil else {
             completion(nil)
             return
         }
-
-        do {
-            let json = try JSONSerialization.jsonObject(with: data, options: [])
-
-            let definition = String(data: data, encoding: .utf8)
-            completion(definition)
-        } catch {
-            completion(nil)
-        }
+        completion(data)
     }
     task.resume()
 }

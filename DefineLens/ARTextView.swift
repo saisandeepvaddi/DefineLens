@@ -17,12 +17,13 @@ struct ARTextView: UIViewRepresentable {
     @Binding var recognizedWords: [String]
     @Binding var arView: ARView?
     var onRecognizeWord: (String) -> Void
+//    var handleTap: (matrix_float4x4) -> Void
 
     func makeUIView(context: Context) -> ARView {
         let view = arView ?? ARView(frame: .zero)
         view.session.delegate = context.coordinator
 
-        // Configure ARKit session
+//        // Configure ARKit session
         let configuration = ARWorldTrackingConfiguration()
         configuration.planeDetection = [.horizontal, .vertical]
         configuration.environmentTexturing = .automatic
@@ -30,6 +31,8 @@ struct ARTextView: UIViewRepresentable {
             configuration.frameSemantics.insert(.personSegmentationWithDepth)
         }
         view.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+//        let tapGesture = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap(_:)))
+//        view.addGestureRecognizer(tapGesture)
 
         return view
     }
@@ -50,11 +53,23 @@ struct ARTextView: UIViewRepresentable {
         var parent: ARTextView
         var lastProcessedTime = TimeInterval(0)
         var onRecognizeWord: (String) -> Void
-
+//        var handleTap: (matrix_float4x4) -> Void
         init(_ parent: ARTextView, onRecognizeWord: @escaping (String) -> Void) {
             self.parent = parent
             self.onRecognizeWord = onRecognizeWord
+//            self.handleTap = handleTap
         }
+
+//        @objc func handleTap(_ sender: UITapGestureRecognizer) {
+//            guard let arView = sender.view as? ARView else { return }
+//            let tapLocation = sender.location(in: arView)
+//
+//            // Perform a hit test to find a real world surface
+//            let hitTestResults = arView.hitTest(tapLocation, types: .featurePoint)
+//            if let closestResult = hitTestResults.first {
+//                handleTap(closestResult.worldTransform)
+//            }
+//        }
 
         func session(_ session: ARSession, didUpdate frame: ARFrame) {
             DispatchQueue.global(qos: .userInitiated).async { [self] in
@@ -86,24 +101,6 @@ struct ARTextView: UIViewRepresentable {
                                     self.onRecognizeWord(recognizedText)
                                 }
                             }
-//                            if recognizedText.count > 1 && recognizedText.rangeOfCharacter(from: CharacterSet.letters.inverted) == nil {
-//                                if !commonWords.contains(recognizedText) {
-//                                    if let cachedDefinition = WordDefinitionCache.shared.definition(for: recognizedText) {
-//                                        print("Cached Definition of \(recognizedText): \(cachedDefinition)")
-//                                    } else {
-//                                        fetchDefinition(for: recognizedText) { definition in
-//                                            guard let definition = definition else {
-//                                                print("Definition not found for \(recognizedText)")
-//                                                return
-//                                            }
-//                                            // Save to cache
-//                                            WordDefinitionCache.shared.setDefinition(definition, for: recognizedText)
-//                                            print("Fetched Definition of \(recognizedText): \(definition)")
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                            processedWords += 1
                         }
                     }
 

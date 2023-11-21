@@ -7,6 +7,7 @@
 
 import ARKit
 import RealityKit
+import simd
 import SwiftUI
 
 extension matrix_float4x4 {
@@ -21,7 +22,7 @@ struct ContentView: View {
     @State private var isARSessionActive = false
     @State private var recognizedWords = [String]()
     @State private var arView: ARView? = ARView(frame: .zero)
-
+    @State private var selectedWord: String = ""
     var body: some View {
         VStack {
             ARTextView(isActive: $isARSessionActive, recognizedWords: $recognizedWords, arView: $arView, onRecognizeWord: { word in
@@ -47,6 +48,7 @@ struct ContentView: View {
                 ForEach(recognizedWords, id: \.self) { word in
                     Button(action: {
                         fetchDefinitionAndDisplayInAR(for: word)
+                        selectedWord = word
                     }) {
                         Text(word)
                             .padding()
@@ -59,47 +61,83 @@ struct ContentView: View {
         .padding()
     }
 
+    // ContentView.swift
+
     func fetchDefinitionAndDisplayInAR(for word: String) {
-        fetchDefinition(for: word) { definition in
-            guard let definition = definition else {
-                print("Definition not found for \(word)")
+        fetchDefinition(for: word) { jsonData in
+            guard let jsonData = jsonData,
+                  let dictionaryEntries = DictionaryResponse.parse(jsonData: jsonData),
+                  let firstEntry = dictionaryEntries.first,
+                  let firstMeaning = firstEntry.meanings.first,
+                  let firstDefinition = firstMeaning.definitions.first
+            else {
+                print("Unable to parse definition for \(word)")
                 return
             }
-            let displayPosition = SIMD3<Float>(0, 0, -1) // Example position
+
+            let formattedText = "\(word.uppercased()) (\(firstMeaning.partOfSpeech))\n\(firstDefinition.definition)"
             DispatchQueue.main.async {
-                self.addTextToARScene(definition, at: displayPosition)
+                self.addTextToARScene(formattedText)
             }
         }
     }
 
-    func addTextToARScene(_ text: String, at position: SIMD3<Float>) {
+//    func addTextToARScene(_ text: String) {
+//        let position = SIMD3<Float>(0, 0, -1) // Example position
+//        let anchorEntity = AnchorEntity(world: position)
+//        let textEntity = createTextEntity(with: text)
+//
+//        anchorEntity.addChild(textEntity)
+//
+//        arView?.scene.addAnchor(anchorEntity)
+//
+    ////        let translationMatrix = matrix_float4x4.translation(position)
+    ////        let anchor = ARAnchor(name: "definition", transform: translationMatrix)
+    ////
+    ////        // You'll need to keep a reference to your ARView to add anchors to it
+    ////        arView?.session.add(anchor: anchor)
+    ////
+    ////        // Create a text entity to display the definition
+    ////        let textEntity = createTextEntity(with: text)
+    ////
+    ////        // Attach the text entity to the anchor
+    ////        // Note: This requires a RealityKit ARView, adjust if using SceneKit
+    ////        arView?.scene.anchors.append(anchor)
+    ////        anchor.addChild(textEntity)
+//    }
+
+    func addTextToARScene(_ text: String) {
+        guard let currentFrame = arView?.session.currentFrame else {
+            print("Unable to get current AR frame.")
+            return
+        }
+
+        // Create a transform with a translation that's 0.5 meters in front of the camera
+        var translation = matrix_identity_float4x4
+        translation.columns.3.z = -0.5 // Adjust this value as needed
+        let transform = currentFrame.camera.transform * translation
+
+        let anchorEntity = AnchorEntity(world: transform)
+        let textEntity = createTextEntity(with: text)
+
+        anchorEntity.addChild(textEntity)
+
+        arView?.scene.addAnchor(anchorEntity)
+    }
+
+    func addTextToARSceneAtPos(_ text: String, at position: matrix_float4x4) {
         let anchorEntity = AnchorEntity(world: position)
         let textEntity = createTextEntity(with: text)
 
         anchorEntity.addChild(textEntity)
 
         arView?.scene.addAnchor(anchorEntity)
-
-//        let translationMatrix = matrix_float4x4.translation(position)
-//        let anchor = ARAnchor(name: "definition", transform: translationMatrix)
-//
-//        // You'll need to keep a reference to your ARView to add anchors to it
-//        arView?.session.add(anchor: anchor)
-//
-//        // Create a text entity to display the definition
-//        let textEntity = createTextEntity(with: text)
-//
-//        // Attach the text entity to the anchor
-//        // Note: This requires a RealityKit ARView, adjust if using SceneKit
-//        arView?.scene.anchors.append(anchor)
-//        anchor.addChild(textEntity)
     }
 
     func createTextEntity(with text: String) -> Entity {
-        // Create an entity with text
         let textMesh = MeshResource.generateText(text,
-                                                 extrusionDepth: 0.1,
-                                                 font: .systemFont(ofSize: 0.5),
+                                                 extrusionDepth: 0.02,
+                                                 font: .boldSystemFont(ofSize: 0.04),
                                                  containerFrame: CGRect.zero,
                                                  alignment: .left,
                                                  lineBreakMode: .byTruncatingTail)
