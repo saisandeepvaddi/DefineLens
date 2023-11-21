@@ -24,13 +24,13 @@ struct ARTextView: UIViewRepresentable {
         view.session.delegate = context.coordinator
 
 //        // Configure ARKit session
-        let configuration = ARWorldTrackingConfiguration()
-        configuration.planeDetection = [.horizontal, .vertical]
-        configuration.environmentTexturing = .automatic
-        if ARWorldTrackingConfiguration.supportsFrameSemantics(.personSegmentationWithDepth) {
-            configuration.frameSemantics.insert(.personSegmentationWithDepth)
-        }
-        view.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+//        let configuration = ARWorldTrackingConfiguration()
+//        configuration.planeDetection = [.horizontal, .vertical]
+//        configuration.environmentTexturing = .automatic
+//        if ARWorldTrackingConfiguration.supportsFrameSemantics(.personSegmentationWithDepth) {
+//            configuration.frameSemantics.insert(.personSegmentationWithDepth)
+//        }
+//        view.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
 //        let tapGesture = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap(_:)))
 //        view.addGestureRecognizer(tapGesture)
 

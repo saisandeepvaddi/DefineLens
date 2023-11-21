@@ -23,6 +23,7 @@ struct ContentView: View {
     @State private var recognizedWords = [String]()
     @State private var arView: ARView? = ARView(frame: .zero)
     @State private var selectedWord: String = ""
+    @State private var currentTextAnchor: AnchorEntity?
     var body: some View {
         VStack {
             ARTextView(isActive: $isARSessionActive, recognizedWords: $recognizedWords, arView: $arView, onRecognizeWord: { word in
@@ -35,6 +36,18 @@ struct ContentView: View {
 
             Button(action: {
                 isARSessionActive.toggle()
+                let configuration = ARWorldTrackingConfiguration()
+                configuration.planeDetection = [.horizontal, .vertical]
+                configuration.environmentTexturing = .automatic
+                if ARWorldTrackingConfiguration.supportsFrameSemantics(.personSegmentationWithDepth) {
+                    configuration.frameSemantics.insert(.personSegmentationWithDepth)
+                }
+                if isARSessionActive {
+                    arView?.session.run(configuration)
+                } else {
+                    arView?.session.pause()
+                }
+//                view.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
             }) {
                 Text(isARSessionActive ? "Stop" : "Start")
             }
@@ -120,8 +133,12 @@ struct ContentView: View {
         let anchorEntity = AnchorEntity(world: transform)
         let textEntity = createTextEntity(with: text)
 
-        anchorEntity.addChild(textEntity)
+        if let existingAnchor = currentTextAnchor {
+            arView?.scene.removeAnchor(existingAnchor)
+        }
 
+        anchorEntity.addChild(textEntity)
+        currentTextAnchor = anchorEntity
         arView?.scene.addAnchor(anchorEntity)
     }
 
@@ -141,8 +158,12 @@ struct ContentView: View {
                                                  containerFrame: CGRect.zero,
                                                  alignment: .left,
                                                  lineBreakMode: .byTruncatingTail)
-        let material = SimpleMaterial(color: .white, isMetallic: false)
-        return ModelEntity(mesh: textMesh, materials: [material])
+        let material = SimpleMaterial(color: .green, isMetallic: false)
+        let textEntity = ModelEntity(mesh: textMesh, materials: [material])
+
+        textEntity.transform.rotation = simd_quatf(angle: .pi / 2, axis: [0, 0, 1])
+
+        return textEntity
     }
 }
 
