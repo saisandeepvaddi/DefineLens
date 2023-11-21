@@ -15,6 +15,7 @@ func fetchDefinition(for word: String, completion: @escaping (String?) -> Void) 
     }
 
     let task = URLSession.shared.dataTask(with: url) { data, _, error in
+        print("data: ", data)
         guard let data = data, error == nil else {
             completion(nil)
             return

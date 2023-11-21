@@ -14,9 +14,13 @@ let commonWords = Set(["the", "and", "of", "to", "in", "a", "is", "that", "it", 
 
 struct ARTextView: UIViewRepresentable {
     @Binding var isActive: Bool
+    @Binding var recognizedWords: [String]
+    @Binding var arView: ARView?
+    var onRecognizeWord: (String) -> Void
+
     func makeUIView(context: Context) -> ARView {
-        let arView = ARView(frame: .zero)
-        arView.session.delegate = context.coordinator
+        let view = arView ?? ARView(frame: .zero)
+        view.session.delegate = context.coordinator
 
         // Configure ARKit session
         let configuration = ARWorldTrackingConfiguration()
@@ -25,9 +29,9 @@ struct ARTextView: UIViewRepresentable {
         if ARWorldTrackingConfiguration.supportsFrameSemantics(.personSegmentationWithDepth) {
             configuration.frameSemantics.insert(.personSegmentationWithDepth)
         }
-        arView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+        view.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
 
-        return arView
+        return view
     }
 
     func updateUIView(_ uiView: ARView, context: Context) {
@@ -39,15 +43,17 @@ struct ARTextView: UIViewRepresentable {
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(self)
+        Coordinator(self, onRecognizeWord: onRecognizeWord)
     }
 
     class Coordinator: NSObject, ARSessionDelegate {
         var parent: ARTextView
         var lastProcessedTime = TimeInterval(0)
+        var onRecognizeWord: (String) -> Void
 
-        init(_ parent: ARTextView) {
+        init(_ parent: ARTextView, onRecognizeWord: @escaping (String) -> Void) {
             self.parent = parent
+            self.onRecognizeWord = onRecognizeWord
         }
 
         func session(_ session: ARSession, didUpdate frame: ARFrame) {
@@ -64,33 +70,40 @@ struct ARTextView: UIViewRepresentable {
                             return
                         }
 
-                        var processedWords = 0
+//                        var processedWords = 0
                         for observation in observations {
-                            if processedWords >= 5 {
-                                break
-                            }
+//                            if processedWords >= 5 {
+//                                break
+//                            }
                             guard let topCandidate = observation.topCandidates(1).first else {
                                 continue // No candidate, continue to next observation
                             }
                             let recognizedText = topCandidate.string.lowercased()
-                            if recognizedText.count > 1 && recognizedText.rangeOfCharacter(from: CharacterSet.letters.inverted) == nil {
-                                if !commonWords.contains(recognizedText) {
-                                    if let cachedDefinition = WordDefinitionCache.shared.definition(for: recognizedText) {
-                                        print("Cached Definition of \(recognizedText): \(cachedDefinition)")
-                                    } else {
-                                        fetchDefinition(for: recognizedText) { definition in
-                                            guard let definition = definition else {
-                                                print("Definition not found for \(recognizedText)")
-                                                return
-                                            }
-                                            // Save to cache
-                                            WordDefinitionCache.shared.setDefinition(definition, for: recognizedText)
-                                            print("Fetched Definition of \(recognizedText): \(definition)")
-                                        }
-                                    }
+                            if recognizedText.count > 1,
+                               recognizedText.rangeOfCharacter(from: CharacterSet.letters.inverted) == nil
+                            {
+                                DispatchQueue.main.async {
+                                    self.onRecognizeWord(recognizedText)
                                 }
                             }
-                            processedWords += 1
+//                            if recognizedText.count > 1 && recognizedText.rangeOfCharacter(from: CharacterSet.letters.inverted) == nil {
+//                                if !commonWords.contains(recognizedText) {
+//                                    if let cachedDefinition = WordDefinitionCache.shared.definition(for: recognizedText) {
+//                                        print("Cached Definition of \(recognizedText): \(cachedDefinition)")
+//                                    } else {
+//                                        fetchDefinition(for: recognizedText) { definition in
+//                                            guard let definition = definition else {
+//                                                print("Definition not found for \(recognizedText)")
+//                                                return
+//                                            }
+//                                            // Save to cache
+//                                            WordDefinitionCache.shared.setDefinition(definition, for: recognizedText)
+//                                            print("Fetched Definition of \(recognizedText): \(definition)")
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                            processedWords += 1
                         }
                     }
 
