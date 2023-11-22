@@ -23,3 +23,22 @@ func fetchDefinition(for word: String, completion: @escaping (Data?) -> Void) {
     }
     task.resume()
 }
+
+func fetchFormattedDefinition(for word: String, completion: @escaping (String?, String?) -> Void) {
+    fetchDefinition(for: word) { jsonData in
+        guard let jsonData = jsonData,
+              let dictionaryEntries = DictionaryResponse.parse(jsonData: jsonData),
+              let firstEntry = dictionaryEntries.first,
+              let firstMeaning = firstEntry.meanings.first,
+              let firstDefinition = firstMeaning.definitions.first
+        else {
+            print("Unable to parse definition for \(word)")
+            completion(nil, "Unable to parse definition for \(word)")
+            return
+        }
+
+        let formattedText = "\(word.uppercased()) (\(firstMeaning.partOfSpeech))\n\(firstDefinition.definition)"
+
+        completion(formattedText, nil)
+    }
+}

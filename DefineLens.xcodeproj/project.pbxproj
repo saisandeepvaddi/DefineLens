@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4442BB612B0C8151007FCB91 /* DictionaryResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4442BB602B0C8151007FCB91 /* DictionaryResponse.swift */; };
+		4459D7DE2B0D1AAC0029359E /* CrosshairView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4459D7DD2B0D1AAC0029359E /* CrosshairView.swift */; };
 		44CFDDF22B0B20CE0002ECAB /* DefineLensApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CFDDF12B0B20CE0002ECAB /* DefineLensApp.swift */; };
 		44CFDDF42B0B20CE0002ECAB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CFDDF32B0B20CE0002ECAB /* ContentView.swift */; };
 		44CFDDF62B0B20CF0002ECAB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 44CFDDF52B0B20CF0002ECAB /* Assets.xcassets */; };
@@ -19,6 +20,7 @@
 
 /* Begin PBXFileReference section */
 		4442BB602B0C8151007FCB91 /* DictionaryResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryResponse.swift; sourceTree = "<group>"; };
+		4459D7DD2B0D1AAC0029359E /* CrosshairView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrosshairView.swift; sourceTree = "<group>"; };
 		44CFDDEE2B0B20CE0002ECAB /* DefineLens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DefineLens.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		44CFDDF12B0B20CE0002ECAB /* DefineLensApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefineLensApp.swift; sourceTree = "<group>"; };
 		44CFDDF32B0B20CE0002ECAB /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -69,6 +71,7 @@
 				44CFDE022B0B2F490002ECAB /* DictionaryAPI.swift */,
 				44CFDE042B0B2FDA0002ECAB /* WordDefinitionCache.swift */,
 				4442BB602B0C8151007FCB91 /* DictionaryResponse.swift */,
+				4459D7DD2B0D1AAC0029359E /* CrosshairView.swift */,
 			);
 			path = DefineLens;
 			sourceTree = "<group>";
@@ -157,6 +160,7 @@
 				44CFDE052B0B2FDA0002ECAB /* WordDefinitionCache.swift in Sources */,
 				4442BB612B0C8151007FCB91 /* DictionaryResponse.swift in Sources */,
 				44CFDDF22B0B20CE0002ECAB /* DefineLensApp.swift in Sources */,
+				4459D7DE2B0D1AAC0029359E /* CrosshairView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,7 +294,9 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Camera access needed to recognize the words";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Your app uses the photo library to save debugging images for OCR processing.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -330,7 +336,9 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Camera access needed to recognize the words";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Your app uses the photo library to save debugging images for OCR processing.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
