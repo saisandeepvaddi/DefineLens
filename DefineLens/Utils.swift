@@ -29,11 +29,11 @@ func convert(boundingBox: CGRect, to bounds: CGRect) -> CGRect {
     return rect
 }
 
-func drawAnnotations(image: UIImage, cgImage: CGImage, observations: [VNRecognizedTextObservation]) {
+func drawAnnotationsAtObservations(image: UIImage, cgImage: CGImage, observations: [VNRecognizedTextObservation]) {
     let crosshairX = cgImage.width / 2
     let crosshairY = cgImage.height / 2
     let size = CGSize(width: cgImage.width, height: cgImage.height)
-    var bounds = CGRect(origin: .zero, size: size)
+    let bounds = CGRect(origin: .zero, size: size)
 
     UIGraphicsBeginImageContextWithOptions(size, false, 0)
 
@@ -44,11 +44,45 @@ func drawAnnotations(image: UIImage, cgImage: CGImage, observations: [VNRecogniz
     context?.setLineWidth(2)
 
     observations.forEach { observation in
-        var boundingBox = observation.boundingBox
-        var fixedBoundingBox = convert(boundingBox: boundingBox, to: bounds)
+        let boundingBox = observation.boundingBox
+        let fixedBoundingBox = convert(boundingBox: boundingBox, to: bounds)
 
         let scaledRect = VNImageRectForNormalizedRect(fixedBoundingBox, Int(size.width), Int(size.height))
         context?.addRect(fixedBoundingBox)
+    }
+
+    context?.strokePath()
+
+    context?.setFillColor(UIColor.blue.cgColor)
+    let crosshairCenter = CGPoint(x: crosshairX, y: crosshairY)
+    context?.addEllipse(in: CGRect(x: crosshairCenter.x, y: crosshairCenter.y, width: 20, height: 20))
+    context?.fillPath()
+
+    // Extract the annotated image
+    let annotatedImage = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
+
+    if let annotatedImage = annotatedImage {
+        UIImageWriteToSavedPhotosAlbum(annotatedImage, nil, nil, nil)
+    }
+}
+
+func drawAnnotationsAtBoxes(image: UIImage, cgImage: CGImage, bboxes: [CGRect]) {
+    let crosshairX = cgImage.width / 2
+    let crosshairY = cgImage.height / 2
+    let size = CGSize(width: cgImage.width, height: cgImage.height)
+    let bounds = CGRect(origin: .zero, size: size)
+
+    UIGraphicsBeginImageContextWithOptions(size, false, 0)
+
+    let context = UIGraphicsGetCurrentContext()
+    image.draw(at: .zero)
+
+    context?.setStrokeColor(UIColor.red.cgColor)
+    context?.setLineWidth(2)
+
+    bboxes.forEach { bbox in
+        context?.addRect(bbox)
     }
 
     context?.strokePath()
@@ -83,25 +117,55 @@ func recognizeTextAndHighlight(from image: UIImage, completion: @escaping (Strin
         let crosshairX = cgImage.width / 2
         let crosshairY = cgImage.height / 2
         let size = CGSize(width: cgImage.width, height: cgImage.height)
-        var bounds = CGRect(origin: .zero, size: size)
+        let bounds = CGRect(origin: .zero, size: size)
         let observations = request.results as? [VNRecognizedTextObservation]
-        drawAnnotations(image: image, cgImage: cgImage, observations: observations ?? [])
-
-        let recognizedStrings = observations?.compactMap { observation in
-            var boundingBox = observation.boundingBox
-            var fixedBoundingBox = convert(boundingBox: boundingBox, to: bounds)
-
-            if fixedBoundingBox.contains(CGPoint(x: crosshairX, y: crosshairY)) {
-                return observation.topCandidates(1).first?.string
-            }
-            return nil
+//        drawAnnotationsAtObservations(image: image, cgImage: cgImage, observations: observations ?? [])
+        guard let observations = observations else {
+            completion(nil)
+            return
         }
 
-        if recognizedStrings?.count == 0 {
+        var recognizedStrings = [String]()
+        var bboxes = [CGRect]()
+        let crosshairPoint = CGPoint(x: crosshairX, y: crosshairY)
+
+        for observation in observations {
+            let boundingBox = observation.boundingBox
+            let fixedBoundingBox = convert(boundingBox: boundingBox, to: bounds)
+
+            if fixedBoundingBox.contains(CGPoint(x: crosshairX, y: crosshairY)) {
+                guard let candidate = observation.topCandidates(1).first else { continue }
+                let fullString = candidate.string
+                let words = fullString.split(separator: " ").map(String.init)
+                for word in words {
+                    if let wordRange = fullString.range(of: word) {
+                        do {
+                            let boxObservation = try candidate.boundingBox(for: wordRange)
+                            guard let boxObservation = boxObservation else {
+                                continue
+                            }
+
+                            let wordBoundingBox = boxObservation.boundingBox
+                            let wordBoundingBoxTransformed = convert(boundingBox: wordBoundingBox, to: bounds)
+                            bboxes.append(wordBoundingBoxTransformed)
+                            if wordBoundingBoxTransformed.contains(crosshairPoint) {
+                                recognizedStrings.append(word)
+                            }
+                        } catch {
+                            print("Error in wordRange")
+                        }
+                    }
+                }
+            }
+        }
+
+        drawAnnotationsAtBoxes(image: image, cgImage: cgImage, bboxes: bboxes)
+
+        if recognizedStrings.count == 0 {
             print("No words found")
         }
 
-        let combinedText = recognizedStrings?.joined(separator: "\n")
+        let combinedText = recognizedStrings.joined(separator: "\n")
         completion(combinedText)
     }
 
