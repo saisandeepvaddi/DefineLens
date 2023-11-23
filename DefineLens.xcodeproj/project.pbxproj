@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		442907F02B0ECCAB0023D2C6 /* CameraManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442907EF2B0ECCAB0023D2C6 /* CameraManager.swift */; };
+		442907F22B0ECE0E0023D2C6 /* DefinitionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442907F12B0ECE0E0023D2C6 /* DefinitionView.swift */; };
+		442907F42B0F05650023D2C6 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442907F32B0F05650023D2C6 /* CameraView.swift */; };
+		442907F62B0F08820023D2C6 /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442907F52B0F08820023D2C6 /* CameraPreview.swift */; };
+		442907F82B0F0A800023D2C6 /* PhotoCaptureDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442907F72B0F0A800023D2C6 /* PhotoCaptureDelegate.swift */; };
+		442907FC2B0F0CAC0023D2C6 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442907FB2B0F0CAC0023D2C6 /* Camera.swift */; };
+		442907FE2B0F11860023D2C6 /* ViewfinderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442907FD2B0F11860023D2C6 /* ViewfinderView.swift */; };
 		4442BB612B0C8151007FCB91 /* DictionaryResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4442BB602B0C8151007FCB91 /* DictionaryResponse.swift */; };
 		4459D7DE2B0D1AAC0029359E /* CrosshairView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4459D7DD2B0D1AAC0029359E /* CrosshairView.swift */; };
 		44CFDDF22B0B20CE0002ECAB /* DefineLensApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CFDDF12B0B20CE0002ECAB /* DefineLensApp.swift */; };
@@ -19,6 +26,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		442907EF2B0ECCAB0023D2C6 /* CameraManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraManager.swift; sourceTree = "<group>"; };
+		442907F12B0ECE0E0023D2C6 /* DefinitionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefinitionView.swift; sourceTree = "<group>"; };
+		442907F32B0F05650023D2C6 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		442907F52B0F08820023D2C6 /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
+		442907F72B0F0A800023D2C6 /* PhotoCaptureDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCaptureDelegate.swift; sourceTree = "<group>"; };
+		442907FB2B0F0CAC0023D2C6 /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
+		442907FD2B0F11860023D2C6 /* ViewfinderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewfinderView.swift; sourceTree = "<group>"; };
 		4442BB602B0C8151007FCB91 /* DictionaryResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryResponse.swift; sourceTree = "<group>"; };
 		4459D7DD2B0D1AAC0029359E /* CrosshairView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrosshairView.swift; sourceTree = "<group>"; };
 		44CFDDEE2B0B20CE0002ECAB /* DefineLens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DefineLens.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -72,6 +86,13 @@
 				44CFDE042B0B2FDA0002ECAB /* WordDefinitionCache.swift */,
 				4442BB602B0C8151007FCB91 /* DictionaryResponse.swift */,
 				4459D7DD2B0D1AAC0029359E /* CrosshairView.swift */,
+				442907EF2B0ECCAB0023D2C6 /* CameraManager.swift */,
+				442907F12B0ECE0E0023D2C6 /* DefinitionView.swift */,
+				442907F32B0F05650023D2C6 /* CameraView.swift */,
+				442907F52B0F08820023D2C6 /* CameraPreview.swift */,
+				442907F72B0F0A800023D2C6 /* PhotoCaptureDelegate.swift */,
+				442907FB2B0F0CAC0023D2C6 /* Camera.swift */,
+				442907FD2B0F11860023D2C6 /* ViewfinderView.swift */,
 			);
 			path = DefineLens;
 			sourceTree = "<group>";
@@ -156,10 +177,17 @@
 			files = (
 				44CFDE012B0B225D0002ECAB /* ARTextView.swift in Sources */,
 				44CFDDF42B0B20CE0002ECAB /* ContentView.swift in Sources */,
+				442907F02B0ECCAB0023D2C6 /* CameraManager.swift in Sources */,
+				442907F42B0F05650023D2C6 /* CameraView.swift in Sources */,
 				44CFDE032B0B2F490002ECAB /* DictionaryAPI.swift in Sources */,
 				44CFDE052B0B2FDA0002ECAB /* WordDefinitionCache.swift in Sources */,
+				442907F82B0F0A800023D2C6 /* PhotoCaptureDelegate.swift in Sources */,
+				442907F62B0F08820023D2C6 /* CameraPreview.swift in Sources */,
 				4442BB612B0C8151007FCB91 /* DictionaryResponse.swift in Sources */,
+				442907F22B0ECE0E0023D2C6 /* DefinitionView.swift in Sources */,
 				44CFDDF22B0B20CE0002ECAB /* DefineLensApp.swift in Sources */,
+				442907FC2B0F0CAC0023D2C6 /* Camera.swift in Sources */,
+				442907FE2B0F11860023D2C6 /* ViewfinderView.swift in Sources */,
 				4459D7DE2B0D1AAC0029359E /* CrosshairView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
