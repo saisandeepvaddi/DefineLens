@@ -10,7 +10,7 @@ import UIKit
 import Vision
 
 // From: https://stackoverflow.com/a/73399681/7376662
-func convert(boundingBox: CGRect, to bounds: CGRect) -> CGRect {
+func convertBoundingBoxCoordinates(boundingBox: CGRect, to bounds: CGRect) -> CGRect {
     let imageWidth = bounds.width
     let imageHeight = bounds.height
 
@@ -45,7 +45,7 @@ func drawAnnotationsAtObservations(image: UIImage, cgImage: CGImage, observation
 
     observations.forEach { observation in
         let boundingBox = observation.boundingBox
-        let fixedBoundingBox = convert(boundingBox: boundingBox, to: bounds)
+        let fixedBoundingBox = convertBoundingBoxCoordinates(boundingBox: boundingBox, to: bounds)
 
         let scaledRect = VNImageRectForNormalizedRect(fixedBoundingBox, Int(size.width), Int(size.height))
         context?.addRect(fixedBoundingBox)
@@ -131,7 +131,7 @@ func recognizeTextAndHighlight(from image: UIImage, completion: @escaping (Strin
 
         for observation in observations {
             let boundingBox = observation.boundingBox
-            let fixedBoundingBox = convert(boundingBox: boundingBox, to: bounds)
+            let fixedBoundingBox = convertBoundingBoxCoordinates(boundingBox: boundingBox, to: bounds)
 
             if fixedBoundingBox.contains(CGPoint(x: crosshairX, y: crosshairY)) {
                 guard let candidate = observation.topCandidates(1).first else { continue }
@@ -146,7 +146,7 @@ func recognizeTextAndHighlight(from image: UIImage, completion: @escaping (Strin
                             }
 
                             let wordBoundingBox = boxObservation.boundingBox
-                            let wordBoundingBoxTransformed = convert(boundingBox: wordBoundingBox, to: bounds)
+                            let wordBoundingBoxTransformed = convertBoundingBoxCoordinates(boundingBox: wordBoundingBox, to: bounds)
                             bboxes.append(wordBoundingBoxTransformed)
                             if wordBoundingBoxTransformed.contains(crosshairPoint) {
                                 recognizedStrings.append(word)
