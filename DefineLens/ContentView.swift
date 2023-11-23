@@ -8,7 +8,9 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             CameraView(cameraManager: cameraManager)
+                .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
             CrosshairView()
+                .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
             VStack {
                 Spacer()
                 Button("Snap") {
@@ -30,6 +32,7 @@ struct ContentView: View {
                 .background(Color.blue)
                 .foregroundColor(.white)
                 .clipShape(Circle())
+                .padding(.bottom)
             }
         }
     }

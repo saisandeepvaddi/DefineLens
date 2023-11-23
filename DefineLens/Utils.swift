@@ -9,6 +9,64 @@ import Foundation
 import UIKit
 import Vision
 
+// From: https://stackoverflow.com/a/73399681/7376662
+func convert(boundingBox: CGRect, to bounds: CGRect) -> CGRect {
+    let imageWidth = bounds.width
+    let imageHeight = bounds.height
+
+    // Begin with input rect.
+    var rect = boundingBox
+
+    // Reposition origin.
+    rect.origin.x *= imageWidth
+    rect.origin.x += bounds.minX
+    rect.origin.y = (1 - rect.maxY) * imageHeight + bounds.minY
+
+    // Rescale normalized coordinates.
+    rect.size.width *= imageWidth
+    rect.size.height *= imageHeight
+
+    return rect
+}
+
+func drawAnnotations(image: UIImage, cgImage: CGImage, observations: [VNRecognizedTextObservation]) {
+    let crosshairX = cgImage.width / 2
+    let crosshairY = cgImage.height / 2
+    let size = CGSize(width: cgImage.width, height: cgImage.height)
+    var bounds = CGRect(origin: .zero, size: size)
+
+    UIGraphicsBeginImageContextWithOptions(size, false, 0)
+
+    let context = UIGraphicsGetCurrentContext()
+    image.draw(at: .zero)
+
+    context?.setStrokeColor(UIColor.red.cgColor)
+    context?.setLineWidth(2)
+
+    observations.forEach { observation in
+        var boundingBox = observation.boundingBox
+        var fixedBoundingBox = convert(boundingBox: boundingBox, to: bounds)
+
+        let scaledRect = VNImageRectForNormalizedRect(fixedBoundingBox, Int(size.width), Int(size.height))
+        context?.addRect(fixedBoundingBox)
+    }
+
+    context?.strokePath()
+
+    context?.setFillColor(UIColor.blue.cgColor)
+    let crosshairCenter = CGPoint(x: crosshairX, y: crosshairY)
+    context?.addEllipse(in: CGRect(x: crosshairCenter.x, y: crosshairCenter.y, width: 20, height: 20))
+    context?.fillPath()
+
+    // Extract the annotated image
+    let annotatedImage = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
+
+    if let annotatedImage = annotatedImage {
+        UIImageWriteToSavedPhotosAlbum(annotatedImage, nil, nil, nil)
+    }
+}
+
 func recognizeTextAndHighlight(from image: UIImage, completion: @escaping (String?) -> Void) {
     guard let cgImage = image.cgImage else {
         completion(nil)
@@ -24,47 +82,16 @@ func recognizeTextAndHighlight(from image: UIImage, completion: @escaping (Strin
         // Calculate crosshair position
         let crosshairX = cgImage.width / 2
         let crosshairY = cgImage.height / 2
-
+        let size = CGSize(width: cgImage.width, height: cgImage.height)
+        var bounds = CGRect(origin: .zero, size: size)
         let observations = request.results as? [VNRecognizedTextObservation]
-
-        let imageSize = image.size
-        UIGraphicsBeginImageContextWithOptions(imageSize, false, 0)
-        let context = UIGraphicsGetCurrentContext()
-        image.draw(at: .zero)
-
-        context?.setStrokeColor(UIColor.red.cgColor)
-        context?.setLineWidth(2)
-
-        observations?.forEach { observation in
-            var boundingBox = observation.boundingBox
-            boundingBox.origin.y = 1 - boundingBox.origin.y
-
-            let scaledRect = VNImageRectForNormalizedRect(boundingBox, Int(imageSize.width), Int(imageSize.height))
-            context?.addRect(scaledRect)
-        }
-
-        context?.strokePath()
-
-        context?.setFillColor(UIColor.blue.cgColor)
-        let crosshairCenter = CGPoint(x: crosshairX, y: crosshairY)
-        context?.addEllipse(in: CGRect(x: crosshairCenter.x, y: crosshairCenter.y, width: 20, height: 20))
-        context?.fillPath()
-
-        // Extract the annotated image
-        let annotatedImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-
-        if let annotatedImage = annotatedImage {
-            UIImageWriteToSavedPhotosAlbum(annotatedImage, nil, nil, nil)
-        }
+        drawAnnotations(image: image, cgImage: cgImage, observations: observations ?? [])
 
         let recognizedStrings = observations?.compactMap { observation in
             var boundingBox = observation.boundingBox
+            var fixedBoundingBox = convert(boundingBox: boundingBox, to: bounds)
 
-            boundingBox.origin.y = 1 - boundingBox.origin.y
-            let scaledRect = VNImageRectForNormalizedRect(boundingBox, Int(cgImage.width), Int(cgImage.height))
-
-            if scaledRect.contains(CGPoint(x: crosshairX, y: crosshairY)) {
+            if fixedBoundingBox.contains(CGPoint(x: crosshairX, y: crosshairY)) {
                 return observation.topCandidates(1).first?.string
             }
             return nil
