@@ -85,6 +85,17 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
     }
 }
 
+extension CameraManager {
+    func convertToUIImage(pixelBuffer: CVPixelBuffer) -> UIImage? {
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+        let context = CIContext(options: nil)
+        guard let cgImage = context.createCGImage(ciImage, from: ciImage.extent) else {
+            return nil
+        }
+        return UIImage(cgImage: cgImage)
+    }
+}
+
 extension UIImage {
     func pixelBuffer() -> CVPixelBuffer? {
         let width = size.width

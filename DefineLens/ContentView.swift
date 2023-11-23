@@ -6,18 +6,31 @@ struct ContentView: View {
     @StateObject var cameraManager = CameraManager()
 
     var body: some View {
-        VStack {
+        ZStack {
             CameraView(cameraManager: cameraManager)
-            Button("Snap") {
-                cameraManager.captureImage { buffer in
-                    // Handle captured image (pixelBuffer)
-                    print(buffer)
+            CrosshairView()
+            VStack {
+                Spacer()
+                Button("Snap") {
+                    cameraManager.captureImage { buffer in
+                        print("Captured")
+                        guard let buffer = buffer else {
+                            print("Invalid buffer")
+                            return
+                        }
+                        if let image = cameraManager.convertToUIImage(pixelBuffer: buffer) {
+                            recognizeTextAndHighlight(from: image) { recognizedText in
+                                print("Recognized Text: \(recognizedText)")
+                            }
+                        }
+                        // Handle captured image (pixelBuffer)
+                    }
                 }
+                .padding()
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .clipShape(Circle())
             }
-            .padding()
-            .background(Color.blue)
-            .foregroundColor(.white)
-            .clipShape(Circle())
         }
     }
 }
