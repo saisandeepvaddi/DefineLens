@@ -1,7 +1,7 @@
 import AVFoundation
 import UIKit
 
-class CameraManager: NSObject, ObservableObject {
+class PhotoCameraManager: NSObject, ObservableObject {
     let session = AVCaptureSession()
     private let photoOutput = AVCapturePhotoOutput()
     private var backCamera: AVCaptureDevice?
@@ -57,7 +57,7 @@ class CameraManager: NSObject, ObservableObject {
     }
 }
 
-extension CameraManager: AVCapturePhotoCaptureDelegate {
+extension PhotoCameraManager: AVCapturePhotoCaptureDelegate {
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         guard let imageData = photo.fileDataRepresentation(),
               let image = UIImage(data: imageData),
@@ -85,7 +85,7 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
     }
 }
 
-extension CameraManager {
+extension PhotoCameraManager {
     func convertToUIImage(pixelBuffer: CVPixelBuffer) -> UIImage? {
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
         let context = CIContext(options: nil)
