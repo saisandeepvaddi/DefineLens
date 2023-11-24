@@ -8,28 +8,33 @@
 import SwiftUI
 
 struct DefinitionView: View {
-    var word: String?
-    @State private var isLoading: Bool = false
-    @State private var definition: String = ""
+    @State var word: String?
+    @State private var isLoading: Bool = true
+    @State private var definitions = [WordDefinition]()
     var body: some View {
         Group {
             if isLoading {
-                Text("Loading...")
+                if let word = word, word.count > 0 {
+                    Text(word).font(.headline)
+                }
+                ProgressView()
             } else {
-                Text(definition)
+                WordDefinitionView(word: word, wordDefinitions: definitions)
             }
         }.task {
             guard let word = word else {
                 print("No word yet")
                 return
             }
+            isLoading = true
             fetchFormattedDefinition(for: word) { def, _ in
                 if let def = def {
-                    definition = def
-                    return
+                    definitions = def
                 } else {
-                    definition = "Definition not found.."
+                    print("No definitions found")
+                    definitions = []
                 }
+                isLoading = false
             }
         }
     }

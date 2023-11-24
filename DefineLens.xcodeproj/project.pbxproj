@@ -17,6 +17,7 @@
 		4454ECF62B0FE74B00AF3E3F /* TextRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4454ECF52B0FE74B00AF3E3F /* TextRecognizer.swift */; };
 		4454ECF82B0FED8000AF3E3F /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4454ECF72B0FED8000AF3E3F /* VideoView.swift */; };
 		4459D7DE2B0D1AAC0029359E /* CrosshairView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4459D7DD2B0D1AAC0029359E /* CrosshairView.swift */; };
+		44B827F22B1030E60084CD09 /* WordDefinitionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44B827F12B1030E60084CD09 /* WordDefinitionView.swift */; };
 		44CFDDF22B0B20CE0002ECAB /* DefineLensApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CFDDF12B0B20CE0002ECAB /* DefineLensApp.swift */; };
 		44CFDDF42B0B20CE0002ECAB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CFDDF32B0B20CE0002ECAB /* ContentView.swift */; };
 		44CFDDF62B0B20CF0002ECAB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 44CFDDF52B0B20CF0002ECAB /* Assets.xcassets */; };
@@ -37,6 +38,7 @@
 		4454ECF52B0FE74B00AF3E3F /* TextRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognizer.swift; sourceTree = "<group>"; };
 		4454ECF72B0FED8000AF3E3F /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
 		4459D7DD2B0D1AAC0029359E /* CrosshairView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrosshairView.swift; sourceTree = "<group>"; };
+		44B827F12B1030E60084CD09 /* WordDefinitionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordDefinitionView.swift; sourceTree = "<group>"; };
 		44CFDDEE2B0B20CE0002ECAB /* DefineLens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DefineLens.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		44CFDDF12B0B20CE0002ECAB /* DefineLensApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefineLensApp.swift; sourceTree = "<group>"; };
 		44CFDDF32B0B20CE0002ECAB /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 				4454ECF32B0FE62700AF3E3F /* VideoCameraManager.swift */,
 				4454ECF52B0FE74B00AF3E3F /* TextRecognizer.swift */,
 				4454ECF72B0FED8000AF3E3F /* VideoView.swift */,
+				44B827F12B1030E60084CD09 /* WordDefinitionView.swift */,
 			);
 			path = DefineLens;
 			sourceTree = "<group>";
@@ -181,6 +184,7 @@
 				44CFDE012B0B225D0002ECAB /* ARTextView.swift in Sources */,
 				44CFDDF42B0B20CE0002ECAB /* ContentView.swift in Sources */,
 				442907F02B0ECCAB0023D2C6 /* PhotoCameraManager.swift in Sources */,
+				44B827F22B1030E60084CD09 /* WordDefinitionView.swift in Sources */,
 				442907F42B0F05650023D2C6 /* CameraView.swift in Sources */,
 				44CFDE032B0B2F490002ECAB /* DictionaryAPI.swift in Sources */,
 				44CFDE052B0B2FDA0002ECAB /* WordDefinitionCache.swift in Sources */,

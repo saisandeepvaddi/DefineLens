@@ -7,6 +7,7 @@ struct ContentView: View {
     @StateObject var videoCameraManager = VideoCameraManager()
     @State private var navigateToDefinition = false
     @State private var recognizedWord: String?
+
     var body: some View {
         NavigationView {
             ZStack {
@@ -18,7 +19,6 @@ struct ContentView: View {
                     Spacer()
                     Button("Snap") {
                         photoCameraManager.captureImage { buffer in
-
                             guard let buffer = buffer else {
                                 print("Invalid buffer")
                                 return
