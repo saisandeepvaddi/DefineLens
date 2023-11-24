@@ -28,6 +28,8 @@ class MLTextRecognizer: NSObject, ObservableObject {
     func createVisionImageFromUIImage(from uiImage: UIImage) -> VisionImage {
         let image = VisionImage(image: uiImage)
         image.orientation = uiImage.imageOrientation
+        print("Orientation: \(image.orientation)")
+//        image.orientation = image.orientation = imageUtils.imageOrientation(deviceOrientation: deviceOrientation, cameraPosition: cameraPosition ?? .back)
 //        let cameraPosition = AVCaptureDevice.default(for: .video)?.position
 //        let deviceOrientation = UIDevice.current.orientation
 //        image.orientation = imageUtils.imageOrientation(deviceOrientation: deviceOrientation, cameraPosition: cameraPosition ?? .back)

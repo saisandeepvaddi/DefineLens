@@ -13,8 +13,9 @@ class MLPhotoCameraManager: NSObject, ObservableObject {
     let session = AVCaptureSession()
     private let photoOutput = AVCapturePhotoOutput()
     private var backCamera: AVCaptureDevice?
-    private var captureCompletionHandler: ((Text?) -> Void)?
+    private var captureCompletionHandler: ((Text?, UIImage?) -> Void)?
     private var mlTextRecognizer = MLTextRecognizer()
+    @Published var blocks = [TextBlock]()
 
     override init() {
         super.init()
@@ -59,7 +60,7 @@ class MLPhotoCameraManager: NSObject, ObservableObject {
         }
     }
 
-    func captureImage(completion: @escaping (Text?) -> Void) {
+    func captureImage(completion: @escaping (Text?, UIImage?) -> Void) {
         captureCompletionHandler = completion
         let settings = AVCapturePhotoSettings()
         photoOutput.capturePhoto(with: settings, delegate: self)
@@ -72,7 +73,7 @@ extension MLPhotoCameraManager: AVCapturePhotoCaptureDelegate {
               let image = UIImage(data: imageData)
 //              let pixelBuffer = image.pixelBuffer()
         else {
-            captureCompletionHandler?(nil)
+            captureCompletionHandler?(nil, nil)
             return
         }
 
@@ -81,7 +82,15 @@ extension MLPhotoCameraManager: AVCapturePhotoCaptureDelegate {
             return
         }
 
-        mlTextRecognizer.getTextFromImage(from: image, completion: captureCompletionHandler)
+        mlTextRecognizer.getTextFromImage(from: image) { text in
+            guard let blocks = text?.blocks else {
+                print("No Blocks")
+                captureCompletionHandler(text, image)
+                return
+            }
+            self.blocks = blocks
+            captureCompletionHandler(text, image)
+        }
 
 //        captureCompletionHandler?(pixelBuffer)
 //        captureCompletionHandler = nil

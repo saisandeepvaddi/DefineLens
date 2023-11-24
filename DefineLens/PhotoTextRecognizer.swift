@@ -96,9 +96,10 @@ func drawAnnotationsAtBoxes(image: UIImage, cgImage: CGImage, bboxes: [CGRect]) 
     UIGraphicsEndImageContext()
 
 //    Save annotated box to Photos for debugging
-//    if let annotatedImage = annotatedImage {
-//        UIImageWriteToSavedPhotosAlbum(annotatedImage, nil, nil, nil)
-//    }
+    if let annotatedImage = annotatedImage {
+        print("Saving image...")
+        UIImageWriteToSavedPhotosAlbum(annotatedImage, nil, nil, nil)
+    }
 }
 
 func recognizeTextAndHighlight(from image: UIImage, completion: @escaping (String?) -> Void) {

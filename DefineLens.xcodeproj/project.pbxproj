@@ -15,6 +15,7 @@
 		4454ECF42B0FE62700AF3E3F /* VideoCameraManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4454ECF32B0FE62700AF3E3F /* VideoCameraManager.swift */; };
 		4454ECF62B0FE74B00AF3E3F /* TextRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4454ECF52B0FE74B00AF3E3F /* TextRecognizer.swift */; };
 		4454ECF82B0FED8000AF3E3F /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4454ECF72B0FED8000AF3E3F /* VideoView.swift */; };
+		44590B912B113916000BB61F /* MLVideoCameraManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44590B902B113916000BB61F /* MLVideoCameraManager.swift */; };
 		4459D7DE2B0D1AAC0029359E /* CrosshairView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4459D7DD2B0D1AAC0029359E /* CrosshairView.swift */; };
 		4465210B2B111FB900572586 /* ImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4465210A2B111FB900572586 /* ImageUtils.swift */; };
 		4465210D2B112D8100572586 /* MLPhotoCameraManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4465210C2B112D8100572586 /* MLPhotoCameraManager.swift */; };
@@ -38,6 +39,7 @@
 		4454ECF32B0FE62700AF3E3F /* VideoCameraManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCameraManager.swift; sourceTree = "<group>"; };
 		4454ECF52B0FE74B00AF3E3F /* TextRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognizer.swift; sourceTree = "<group>"; };
 		4454ECF72B0FED8000AF3E3F /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
+		44590B902B113916000BB61F /* MLVideoCameraManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLVideoCameraManager.swift; sourceTree = "<group>"; };
 		4459D7DD2B0D1AAC0029359E /* CrosshairView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrosshairView.swift; sourceTree = "<group>"; };
 		4465210A2B111FB900572586 /* ImageUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUtils.swift; sourceTree = "<group>"; };
 		4465210C2B112D8100572586 /* MLPhotoCameraManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLPhotoCameraManager.swift; sourceTree = "<group>"; };
@@ -106,6 +108,7 @@
 				44B827F12B1030E60084CD09 /* WordDefinitionView.swift */,
 				44A483682B10544900D68579 /* MLTextRecognizer.swift */,
 				4465210A2B111FB900572586 /* ImageUtils.swift */,
+				44590B902B113916000BB61F /* MLVideoCameraManager.swift */,
 			);
 			path = DefineLens;
 			sourceTree = "<group>";
@@ -272,6 +275,7 @@
 				44B827F22B1030E60084CD09 /* WordDefinitionView.swift in Sources */,
 				442907F42B0F05650023D2C6 /* CameraView.swift in Sources */,
 				44A483692B10544900D68579 /* MLTextRecognizer.swift in Sources */,
+				44590B912B113916000BB61F /* MLVideoCameraManager.swift in Sources */,
 				44CFDE032B0B2F490002ECAB /* DictionaryAPI.swift in Sources */,
 				4454ECF82B0FED8000AF3E3F /* VideoView.swift in Sources */,
 				4442BB612B0C8151007FCB91 /* DictionaryResponse.swift in Sources */,
