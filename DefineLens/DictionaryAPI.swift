@@ -24,8 +24,14 @@ func fetchDefinition(for word: String, completion: @escaping (Data?) -> Void) {
     task.resume()
 }
 
+func cleanUpWord(_ word: String) -> String {
+    let allowedCharacters = CharacterSet.alphanumerics.union(CharacterSet.whitespaces)
+    let filteredCharacters = word.unicodeScalars.filter(allowedCharacters.contains)
+    return String(String.UnicodeScalarView(filteredCharacters))
+}
+
 func fetchFormattedDefinition(for word: String, completion: @escaping (String?, String?) -> Void) {
-    fetchDefinition(for: word) { jsonData in
+    fetchDefinition(for: cleanUpWord(word)) { jsonData in
         guard let jsonData = jsonData,
               let dictionaryEntries = DictionaryResponse.parse(jsonData: jsonData),
               let firstEntry = dictionaryEntries.first,

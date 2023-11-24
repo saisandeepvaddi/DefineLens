@@ -5,38 +5,46 @@ import SwiftUI
 struct ContentView: View {
     @StateObject var photoCameraManager = PhotoCameraManager()
     @StateObject var videoCameraManager = VideoCameraManager()
-
+    @State private var navigateToDefinition = false
+    @State private var recognizedWord: String?
     var body: some View {
-        ZStack {
-            CameraView(cameraManager: photoCameraManager)
-                .edgesIgnoringSafeArea(.all)
-            CrosshairView()
-                .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/ .all/*@END_MENU_TOKEN@*/)
-            VStack {
-                Spacer()
-                Button("Snap") {
-                    photoCameraManager.captureImage { buffer in
+        NavigationView {
+            ZStack {
+                CameraView(cameraManager: photoCameraManager)
+                    .edgesIgnoringSafeArea(.all)
+                CrosshairView()
+                    .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/ .all/*@END_MENU_TOKEN@*/)
+                VStack {
+                    Spacer()
+                    Button("Snap") {
+                        photoCameraManager.captureImage { buffer in
 
-                        guard let buffer = buffer else {
-                            print("Invalid buffer")
-                            return
-                        }
-                        if let image = photoCameraManager.convertToUIImage(pixelBuffer: buffer) {
-                            recognizeTextAndHighlight(from: image) { recognizedText in
-                                guard let word = recognizedText else {
-                                    print("No word found")
-                                    return
+                            guard let buffer = buffer else {
+                                print("Invalid buffer")
+                                return
+                            }
+                            if let image = photoCameraManager.convertToUIImage(pixelBuffer: buffer) {
+                                recognizeTextAndHighlight(from: image) { recognizedText in
+                                    guard let word = recognizedText else {
+                                        print("No word found")
+                                        return
+                                    }
+                                    print("Recognized Text: \(word)")
+                                    self.recognizedWord = word
+                                    self.navigateToDefinition = true
                                 }
-                                print("Recognized Text: \(word)")
                             }
                         }
                     }
+                    .padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .clipShape(Rectangle())
+                    .padding(.bottom)
+                    NavigationLink(destination: DefinitionView(word: recognizedWord), isActive: $navigateToDefinition) {
+                        EmptyView()
+                    }
                 }
-                .padding()
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .clipShape(Rectangle())
-                .padding(.bottom)
             }
         }
     }

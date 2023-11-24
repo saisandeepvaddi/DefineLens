@@ -8,21 +8,28 @@
 import SwiftUI
 
 struct DefinitionView: View {
-    @Binding var capturedImage: UIImage?
-
+    var word: String?
+    @State private var isLoading: Bool = false
+    @State private var definition: String = ""
     var body: some View {
-        VStack {
-            if let image = capturedImage {
-                // Display the image (for debugging purposes)
-                Image(uiImage: image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-
-                // Perform OCR and display the definition
-                // Implement the logic to recognize text, fetch definition, and display it
-                Text("Recognized Word and Definition Here")
+        Group {
+            if isLoading {
+                Text("Loading...")
             } else {
-                Text("No Image Captured")
+                Text(definition)
+            }
+        }.task {
+            guard let word = word else {
+                print("No word yet")
+                return
+            }
+            fetchFormattedDefinition(for: word) { def, _ in
+                if let def = def {
+                    definition = def
+                    return
+                } else {
+                    definition = "Definition not found.."
+                }
             }
         }
     }
