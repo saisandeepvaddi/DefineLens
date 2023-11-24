@@ -117,7 +117,7 @@ func recognizeTextAndHighlight(from image: UIImage, completion: @escaping (Strin
         let crosshairX = cgImage.width / 2
         let crosshairY = cgImage.height / 2
         let size = CGSize(width: cgImage.width, height: cgImage.height)
-        print("Image size: \(size)")
+
         let bounds = CGRect(origin: .zero, size: size)
         let observations = request.results as? [VNRecognizedTextObservation]
 //        drawAnnotationsAtObservations(image: image, cgImage: cgImage, observations: observations ?? [])

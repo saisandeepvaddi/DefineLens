@@ -79,17 +79,7 @@ class VideoCameraManager: NSObject, ObservableObject {
 
 extension VideoCameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-//        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         processBuffer(sampleBuffer)
-//        let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: .up, options: [:])
-//
-//        do {
-//            try imageRequestHandler.perform([textDetectionRequest])
-//            // The completion handler of the text detection request should update the UI
-//            // with the detected bounding boxes. This has to be done on the main thread.
-//        } catch {
-//            print(error)
-//        }
     }
 }
 
@@ -103,7 +93,7 @@ extension VideoCameraManager {
             DispatchQueue.main.async {
                 self?.videoSize = CGSize(width: frameWidth, height: frameHeight)
             }
-//            print("Video size: \(self?.videoSize)")
+
             self?.handleDetectedText(observations)
         }
 
@@ -114,12 +104,11 @@ extension VideoCameraManager {
     private func handleDetectedText(_ observations: [VNRecognizedTextObservation]) {
         DispatchQueue.main.async {
             self.detectedText = observations.compactMap { $0.topCandidates(1).first?.string }
-//            print("self.detectedText: \(self.detectedText)")
+
             self.boundingBoxes = observations.map { observation in
-//                convertBoundingBoxCoordinates(boundingBox: $0.boundingBox, to: UIScreen.main.bounds)
+
                 observation.boundingBox
             }
-//            self.boundingBoxes = observations.map { $0.boundingBox }
         }
     }
 }
