@@ -17,7 +17,7 @@ struct ContentView: View {
                     .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/ .all/*@END_MENU_TOKEN@*/)
                 VStack {
                     Spacer()
-                    Button("Snap") {
+                    Button(action: {
                         photoCameraManager.captureImage { buffer in
                             guard let buffer = buffer else {
                                 print("Invalid buffer")
@@ -35,12 +35,17 @@ struct ContentView: View {
                                 }
                             }
                         }
+                    }) {
+                        Text("Snap")
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .font(.title)
+                            .cornerRadius(20)
                     }
                     .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .clipShape(Rectangle())
-                    .padding(.bottom)
+
                     NavigationLink(destination: DefinitionView(word: recognizedWord), isActive: $navigateToDefinition) {
                         EmptyView()
                     }
@@ -48,6 +53,10 @@ struct ContentView: View {
             }
         }
     }
+}
+
+#Preview {
+    ContentView(photoCameraManager: PhotoCameraManager(), videoCameraManager: VideoCameraManager())
 }
 
 // struct ContentView: View {
