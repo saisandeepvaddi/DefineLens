@@ -5,6 +5,7 @@
 //  Created by Sai Sandeep Vaddi on 11/19/23.
 //
 
+import os.log
 import SwiftUI
 
 @main
@@ -15,3 +16,5 @@ struct DefineLensApp: App {
         }
     }
 }
+
+let logger = Logger(subsystem: "com.saisandeepvaddi.DefineLens", category: "Camera")
