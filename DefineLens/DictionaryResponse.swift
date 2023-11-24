@@ -55,16 +55,3 @@ func parse(from jsonData: Data) -> [WordDefinition]? {
         return nil
     }
 }
-
-class DictionaryResponse {
-    func parse(from jsonData: Data) -> [WordDefinition]? {
-        let decoder = JSONDecoder()
-        do {
-            let wordDefinitions = try decoder.decode([WordDefinition].self, from: jsonData)
-            return wordDefinitions
-        } catch {
-            print("Error decoding JSON: \(error)")
-            return nil
-        }
-    }
-}

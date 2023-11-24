@@ -71,7 +71,6 @@ func drawAnnotationsAtBoxes(image: UIImage, cgImage: CGImage, bboxes: [CGRect]) 
     let crosshairX = cgImage.width / 2
     let crosshairY = cgImage.height / 2
     let size = CGSize(width: cgImage.width, height: cgImage.height)
-    let bounds = CGRect(origin: .zero, size: size)
 
     UIGraphicsBeginImageContextWithOptions(size, false, 0)
 
@@ -96,9 +95,10 @@ func drawAnnotationsAtBoxes(image: UIImage, cgImage: CGImage, bboxes: [CGRect]) 
     let annotatedImage = UIGraphicsGetImageFromCurrentImageContext()
     UIGraphicsEndImageContext()
 
-    if let annotatedImage = annotatedImage {
-        UIImageWriteToSavedPhotosAlbum(annotatedImage, nil, nil, nil)
-    }
+//    Save annotated box to Photos for debugging
+//    if let annotatedImage = annotatedImage {
+//        UIImageWriteToSavedPhotosAlbum(annotatedImage, nil, nil, nil)
+//    }
 }
 
 func recognizeTextAndHighlight(from image: UIImage, completion: @escaping (String?) -> Void) {
@@ -113,14 +113,16 @@ func recognizeTextAndHighlight(from image: UIImage, completion: @escaping (Strin
             return
         }
 
-        // Calculate crosshair position
         let crosshairX = cgImage.width / 2
         let crosshairY = cgImage.height / 2
         let size = CGSize(width: cgImage.width, height: cgImage.height)
 
         let bounds = CGRect(origin: .zero, size: size)
         let observations = request.results as? [VNRecognizedTextObservation]
-//        drawAnnotationsAtObservations(image: image, cgImage: cgImage, observations: observations ?? [])
+
+        //        Call for debugging. Draws box at each text observation as it comes from OCR.
+        //        drawAnnotationsAtObservations(image: image, cgImage: cgImage, observations: observations ?? [])
+
         guard let observations = observations else {
             completion(nil)
             return
@@ -160,7 +162,8 @@ func recognizeTextAndHighlight(from image: UIImage, completion: @escaping (Strin
             }
         }
 
-        drawAnnotationsAtBoxes(image: image, cgImage: cgImage, bboxes: bboxes)
+//        Call for debugging. Draws box at each word.
+//        drawAnnotationsAtBoxes(image: image, cgImage: cgImage, bboxes: bboxes)
 
         if recognizedStrings.count == 0 {
             print("No words found")
