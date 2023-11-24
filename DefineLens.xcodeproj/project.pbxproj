@@ -16,16 +16,20 @@
 		4454ECF62B0FE74B00AF3E3F /* TextRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4454ECF52B0FE74B00AF3E3F /* TextRecognizer.swift */; };
 		4454ECF82B0FED8000AF3E3F /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4454ECF72B0FED8000AF3E3F /* VideoView.swift */; };
 		4459D7DE2B0D1AAC0029359E /* CrosshairView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4459D7DD2B0D1AAC0029359E /* CrosshairView.swift */; };
+		4465210B2B111FB900572586 /* ImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4465210A2B111FB900572586 /* ImageUtils.swift */; };
+		4465210D2B112D8100572586 /* MLPhotoCameraManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4465210C2B112D8100572586 /* MLPhotoCameraManager.swift */; };
+		44A483692B10544900D68579 /* MLTextRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A483682B10544900D68579 /* MLTextRecognizer.swift */; };
 		44B827F22B1030E60084CD09 /* WordDefinitionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44B827F12B1030E60084CD09 /* WordDefinitionView.swift */; };
 		44CFDDF22B0B20CE0002ECAB /* DefineLensApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CFDDF12B0B20CE0002ECAB /* DefineLensApp.swift */; };
 		44CFDDF42B0B20CE0002ECAB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CFDDF32B0B20CE0002ECAB /* ContentView.swift */; };
 		44CFDDF62B0B20CF0002ECAB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 44CFDDF52B0B20CF0002ECAB /* Assets.xcassets */; };
 		44CFDDFA2B0B20CF0002ECAB /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 44CFDDF92B0B20CF0002ECAB /* Preview Assets.xcassets */; };
 		44CFDE032B0B2F490002ECAB /* DictionaryAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CFDE022B0B2F490002ECAB /* DictionaryAPI.swift */; };
-		44CFDE052B0B2FDA0002ECAB /* WordDefinitionCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CFDE042B0B2FDA0002ECAB /* WordDefinitionCache.swift */; };
+		AE82D58F2615756FEF8A0571 /* Pods_DefineLens.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6D7DE45FB7F83533E20F665 /* Pods_DefineLens.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		28DC121A5540353666E4D4A3 /* Pods-DefineLens.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DefineLens.release.xcconfig"; path = "Target Support Files/Pods-DefineLens/Pods-DefineLens.release.xcconfig"; sourceTree = "<group>"; };
 		442907EF2B0ECCAB0023D2C6 /* PhotoCameraManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCameraManager.swift; sourceTree = "<group>"; };
 		442907F12B0ECE0E0023D2C6 /* DefinitionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefinitionView.swift; sourceTree = "<group>"; };
 		442907F32B0F05650023D2C6 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
@@ -35,6 +39,9 @@
 		4454ECF52B0FE74B00AF3E3F /* TextRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognizer.swift; sourceTree = "<group>"; };
 		4454ECF72B0FED8000AF3E3F /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
 		4459D7DD2B0D1AAC0029359E /* CrosshairView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrosshairView.swift; sourceTree = "<group>"; };
+		4465210A2B111FB900572586 /* ImageUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUtils.swift; sourceTree = "<group>"; };
+		4465210C2B112D8100572586 /* MLPhotoCameraManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLPhotoCameraManager.swift; sourceTree = "<group>"; };
+		44A483682B10544900D68579 /* MLTextRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLTextRecognizer.swift; sourceTree = "<group>"; };
 		44B827F12B1030E60084CD09 /* WordDefinitionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordDefinitionView.swift; sourceTree = "<group>"; };
 		44CFDDEE2B0B20CE0002ECAB /* DefineLens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DefineLens.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		44CFDDF12B0B20CE0002ECAB /* DefineLensApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefineLensApp.swift; sourceTree = "<group>"; };
@@ -43,7 +50,8 @@
 		44CFDDF72B0B20CF0002ECAB /* DefineLens.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DefineLens.entitlements; sourceTree = "<group>"; };
 		44CFDDF92B0B20CF0002ECAB /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		44CFDE022B0B2F490002ECAB /* DictionaryAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryAPI.swift; sourceTree = "<group>"; };
-		44CFDE042B0B2FDA0002ECAB /* WordDefinitionCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordDefinitionCache.swift; sourceTree = "<group>"; };
+		D6D7DE45FB7F83533E20F665 /* Pods_DefineLens.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DefineLens.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E643AF240729B2FDED4DF536 /* Pods-DefineLens.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DefineLens.debug.xcconfig"; path = "Target Support Files/Pods-DefineLens/Pods-DefineLens.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE82D58F2615756FEF8A0571 /* Pods_DefineLens.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,6 +71,8 @@
 			children = (
 				44CFDDF02B0B20CE0002ECAB /* DefineLens */,
 				44CFDDEF2B0B20CE0002ECAB /* Products */,
+				9671131C26C72F7EE5636D98 /* Pods */,
+				7387CBED78131FA4573BA776 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -82,10 +93,10 @@
 				44CFDDF72B0B20CF0002ECAB /* DefineLens.entitlements */,
 				44CFDDF82B0B20CF0002ECAB /* Preview Content */,
 				44CFDE022B0B2F490002ECAB /* DictionaryAPI.swift */,
-				44CFDE042B0B2FDA0002ECAB /* WordDefinitionCache.swift */,
 				4442BB602B0C8151007FCB91 /* DictionaryResponse.swift */,
 				4459D7DD2B0D1AAC0029359E /* CrosshairView.swift */,
 				442907EF2B0ECCAB0023D2C6 /* PhotoCameraManager.swift */,
+				4465210C2B112D8100572586 /* MLPhotoCameraManager.swift */,
 				442907F12B0ECE0E0023D2C6 /* DefinitionView.swift */,
 				442907F32B0F05650023D2C6 /* CameraView.swift */,
 				442907FF2B0F1C7D0023D2C6 /* PhotoTextRecognizer.swift */,
@@ -93,6 +104,8 @@
 				4454ECF52B0FE74B00AF3E3F /* TextRecognizer.swift */,
 				4454ECF72B0FED8000AF3E3F /* VideoView.swift */,
 				44B827F12B1030E60084CD09 /* WordDefinitionView.swift */,
+				44A483682B10544900D68579 /* MLTextRecognizer.swift */,
+				4465210A2B111FB900572586 /* ImageUtils.swift */,
 			);
 			path = DefineLens;
 			sourceTree = "<group>";
@@ -105,6 +118,23 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		7387CBED78131FA4573BA776 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D6D7DE45FB7F83533E20F665 /* Pods_DefineLens.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		9671131C26C72F7EE5636D98 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				E643AF240729B2FDED4DF536 /* Pods-DefineLens.debug.xcconfig */,
+				28DC121A5540353666E4D4A3 /* Pods-DefineLens.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -112,9 +142,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 44CFDDFD2B0B20CF0002ECAB /* Build configuration list for PBXNativeTarget "DefineLens" */;
 			buildPhases = (
+				182EC17C1AD4D6E61D8ACC23 /* [CP] Check Pods Manifest.lock */,
 				44CFDDEA2B0B20CE0002ECAB /* Sources */,
 				44CFDDEB2B0B20CE0002ECAB /* Frameworks */,
 				44CFDDEC2B0B20CE0002ECAB /* Resources */,
+				E4706A09D33EB15AA33B7AEA /* [CP] Embed Pods Frameworks */,
+				5576E1B064463EBE03E5F2A3 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -170,6 +203,65 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		182EC17C1AD4D6E61D8ACC23 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-DefineLens-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5576E1B064463EBE03E5F2A3 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DefineLens/Pods-DefineLens-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DefineLens/Pods-DefineLens-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-DefineLens/Pods-DefineLens-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E4706A09D33EB15AA33B7AEA /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DefineLens/Pods-DefineLens-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DefineLens/Pods-DefineLens-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-DefineLens/Pods-DefineLens-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		44CFDDEA2B0B20CE0002ECAB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -179,13 +271,15 @@
 				442907F02B0ECCAB0023D2C6 /* PhotoCameraManager.swift in Sources */,
 				44B827F22B1030E60084CD09 /* WordDefinitionView.swift in Sources */,
 				442907F42B0F05650023D2C6 /* CameraView.swift in Sources */,
+				44A483692B10544900D68579 /* MLTextRecognizer.swift in Sources */,
 				44CFDE032B0B2F490002ECAB /* DictionaryAPI.swift in Sources */,
-				44CFDE052B0B2FDA0002ECAB /* WordDefinitionCache.swift in Sources */,
 				4454ECF82B0FED8000AF3E3F /* VideoView.swift in Sources */,
 				4442BB612B0C8151007FCB91 /* DictionaryResponse.swift in Sources */,
+				4465210B2B111FB900572586 /* ImageUtils.swift in Sources */,
 				4454ECF42B0FE62700AF3E3F /* VideoCameraManager.swift in Sources */,
 				442907F22B0ECE0E0023D2C6 /* DefinitionView.swift in Sources */,
 				44CFDDF22B0B20CE0002ECAB /* DefineLensApp.swift in Sources */,
+				4465210D2B112D8100572586 /* MLPhotoCameraManager.swift in Sources */,
 				4459D7DE2B0D1AAC0029359E /* CrosshairView.swift in Sources */,
 				4454ECF62B0FE74B00AF3E3F /* TextRecognizer.swift in Sources */,
 				442908002B0F1C7D0023D2C6 /* PhotoTextRecognizer.swift in Sources */,
@@ -311,6 +405,7 @@
 		};
 		44CFDDFE2B0B20CF0002ECAB /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E643AF240729B2FDED4DF536 /* Pods-DefineLens.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -321,6 +416,7 @@
 				DEVELOPMENT_TEAM = N8YQ243JP7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Camera access needed to recognize the words";
@@ -333,8 +429,7 @@
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
@@ -353,6 +448,7 @@
 		};
 		44CFDDFF2B0B20CF0002ECAB /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 28DC121A5540353666E4D4A3 /* Pods-DefineLens.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -363,6 +459,7 @@
 				DEVELOPMENT_TEAM = N8YQ243JP7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Camera access needed to recognize the words";
@@ -375,8 +472,7 @@
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";

@@ -3,7 +3,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject var photoCameraManager = PhotoCameraManager()
+    @StateObject var photoCameraManager = MLPhotoCameraManager()
     @StateObject var videoCameraManager = VideoCameraManager()
     @State private var navigateToDefinition = false
     @State private var recognizedWord: String?
@@ -18,22 +18,25 @@ struct ContentView: View {
                 VStack {
                     Spacer()
                     Button(action: {
-                        photoCameraManager.captureImage { buffer in
-                            guard let buffer = buffer else {
-                                print("Invalid buffer")
-                                return
-                            }
-                            if let image = photoCameraManager.convertToUIImage(pixelBuffer: buffer) {
-                                recognizeTextAndHighlight(from: image) { recognizedText in
-                                    guard let word = recognizedText else {
-                                        print("No word found")
-                                        return
-                                    }
-                                    print("Recognized Text: \(word)")
-                                    self.recognizedWord = word
-                                    self.navigateToDefinition = true
-                                }
-                            }
+//                        photoCameraManager.captureImage { buffer in
+//                            guard let buffer = buffer else {
+//                                print("Invalid buffer")
+//                                return
+//                            }
+//                            if let image = photoCameraManager.convertToUIImage(pixelBuffer: buffer) {
+//                                recognizeTextAndHighlight(from: image) { recognizedText in
+//                                    guard let word = recognizedText else {
+//                                        print("No word found")
+//                                        return
+//                                    }
+//                                    print("Recognized Text: \(word)")
+//                                    self.recognizedWord = word
+//                                    self.navigateToDefinition = true
+//                                }
+//                            }
+//                        }
+                        photoCameraManager.captureImage { text in
+                            print("Text: \(text?.text)")
                         }
                     }) {
                         Text("Snap")
@@ -55,9 +58,9 @@ struct ContentView: View {
     }
 }
 
-#Preview {
-    ContentView(photoCameraManager: PhotoCameraManager(), videoCameraManager: VideoCameraManager())
-}
+// #Preview {
+//    ContentView(photoCameraManager: PhotoCameraManager(), videoCameraManager: VideoCameraManager())
+// }
 
 // struct ContentView: View {
 //    @StateObject var videoCameraManager = VideoCameraManager()

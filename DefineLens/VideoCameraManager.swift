@@ -35,7 +35,7 @@ class VideoCameraManager: NSObject, ObservableObject {
                 session.sessionPreset = .high
             }
             videoOutput.setSampleBufferDelegate(self, queue: queue)
-
+            videoOutput.alwaysDiscardsLateVideoFrames = true
             if session.canAddOutput(videoOutput) {
                 session.addOutput(videoOutput)
             }
@@ -84,21 +84,38 @@ extension VideoCameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
 }
 
 extension VideoCameraManager {
+//    private func processBuffer(_ sampleBuffer: CMSampleBuffer) {
+//        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+//        let request = VNRecognizeTextRequest { [weak self] request, _ in
+//            guard let observations = request.results as? [VNRecognizedTextObservation] else { return }
+//            let frameWidth = CVPixelBufferGetWidth(pixelBuffer)
+//            let frameHeight = CVPixelBufferGetHeight(pixelBuffer)
+//            DispatchQueue.main.async {
+//                self?.videoSize = CGSize(width: frameWidth, height: frameHeight)
+//            }
+//
+//            self?.handleDetectedText(observations)
+//        }
+//
+//        let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: .right)
+//        try? handler.perform([request])
+//    }
     private func processBuffer(_ sampleBuffer: CMSampleBuffer) {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
-        let request = VNRecognizeTextRequest { [weak self] request, _ in
-            guard let observations = request.results as? [VNRecognizedTextObservation] else { return }
-            let frameWidth = CVPixelBufferGetWidth(pixelBuffer)
-            let frameHeight = CVPixelBufferGetHeight(pixelBuffer)
-            DispatchQueue.main.async {
-                self?.videoSize = CGSize(width: frameWidth, height: frameHeight)
-            }
-
-            self?.handleDetectedText(observations)
-        }
-
-        let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: .right)
-        try? handler.perform([request])
+//        let request = VNRecognizeTextRequest { [weak self] request, _ in
+//            guard let observations = request.results as? [VNRecognizedTextObservation] else { return }
+//            let frameWidth = CVPixelBufferGetWidth(pixelBuffer)
+//            let frameHeight = CVPixelBufferGetHeight(pixelBuffer)
+//            DispatchQueue.main.async {
+//                self?.videoSize = CGSize(width: frameWidth, height: frameHeight)
+//            }
+//
+//            self?.handleDetectedText(observations)
+//        }
+//
+//        let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: .right)
+//        try? handler.perform([request])
+        
     }
 
     private func handleDetectedText(_ observations: [VNRecognizedTextObservation]) {

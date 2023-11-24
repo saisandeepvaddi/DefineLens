@@ -66,22 +66,9 @@ extension PhotoCameraManager: AVCapturePhotoCaptureDelegate {
             captureCompletionHandler?(nil)
             return
         }
-//        saveImageToDocumentDirectory(imageData: imageData)
+
         captureCompletionHandler?(pixelBuffer)
         captureCompletionHandler = nil
-    }
-
-    private func saveImageToDocumentDirectory(imageData: Data) {
-        let fileManager = FileManager.default
-        do {
-            let documentsDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-            let fileName = "captured_photo.jpg" // You can customize the file name
-            let fileURL = documentsDirectory.appendingPathComponent(fileName)
-            try imageData.write(to: fileURL, options: .atomic)
-            print("Image saved to \(fileURL)")
-        } catch {
-            print("Error saving image: \(error)")
-        }
     }
 }
 
