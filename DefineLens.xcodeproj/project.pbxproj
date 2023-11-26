@@ -27,6 +27,7 @@
 		44F0D8102B12FA700052BC2C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F0D80F2B12FA700052BC2C /* ContentView.swift */; };
 		44F0D8122B12FAB70052BC2C /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F0D8112B12FAB70052BC2C /* CameraPreview.swift */; };
 		44F0D8142B12FDFE0052BC2C /* BoundingBoxesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F0D8132B12FDFE0052BC2C /* BoundingBoxesView.swift */; };
+		44F0D8162B1312EA0052BC2C /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F0D8152B1312EA0052BC2C /* AppState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +53,7 @@
 		44F0D80F2B12FA700052BC2C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		44F0D8112B12FAB70052BC2C /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
 		44F0D8132B12FDFE0052BC2C /* BoundingBoxesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoundingBoxesView.swift; sourceTree = "<group>"; };
+		44F0D8152B1312EA0052BC2C /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +95,7 @@
 				44F0D80F2B12FA700052BC2C /* ContentView.swift */,
 				44F0D8112B12FAB70052BC2C /* CameraPreview.swift */,
 				44F0D8132B12FDFE0052BC2C /* BoundingBoxesView.swift */,
+				44F0D8152B1312EA0052BC2C /* AppState.swift */,
 			);
 			path = DefineLens;
 			sourceTree = "<group>";
@@ -197,6 +200,7 @@
 			files = (
 				44CFDDF42B0B20CE0002ECAB /* ContentViewOld.swift in Sources */,
 				442907F02B0ECCAB0023D2C6 /* PhotoCameraManager.swift in Sources */,
+				44F0D8162B1312EA0052BC2C /* AppState.swift in Sources */,
 				44F0D8102B12FA700052BC2C /* ContentView.swift in Sources */,
 				44B827F22B1030E60084CD09 /* WordDefinitionView.swift in Sources */,
 				442907F42B0F05650023D2C6 /* CameraView.swift in Sources */,

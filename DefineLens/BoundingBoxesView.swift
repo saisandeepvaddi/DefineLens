@@ -13,6 +13,7 @@ import Vision
 struct BoundingBoxesView: UIViewRepresentable {
     var observations: [VNRecognizedTextObservation]
     var previewLayer: CALayer
+    @EnvironmentObject var appState: AppState
 
     func makeUIView(context: Context) -> UIView {
         let boundingBoxView = UIView(frame: previewLayer.frame)
@@ -27,14 +28,38 @@ struct BoundingBoxesView: UIViewRepresentable {
         drawingLayer.frame = uiView.bounds
         uiView.layer.addSublayer(drawingLayer)
 
+//        DispatchQueue.main.async {
         for observation in observations {
             let boundingBox = observation.boundingBox
             let transformedBox = transformBoundingBox(boundingBox, for: drawingLayer)
             let crosshairPosition = CGPoint(x: UIScreen.main.bounds.midX, y: UIScreen.main.bounds.midY)
             if transformedBox.contains(crosshairPosition) {
-                drawBoundingBox(transformedBox, on: drawingLayer)
+                guard let candidate = observation.topCandidates(1).first else { continue }
+                let fullString = candidate.string
+                let words = fullString.split(separator: " ").map(String.init)
+                for word in words {
+                    if let wordRange = fullString.range(of: word) {
+                        do {
+                            let boxObservation = try candidate.boundingBox(for: wordRange)
+                            guard let boxObservation = boxObservation else {
+                                continue
+                            }
+
+                            let wordBoundingBox = boxObservation.boundingBox
+                            let wordBoundingBoxTransformed = transformBoundingBox(wordBoundingBox, for: drawingLayer)
+
+                            if wordBoundingBoxTransformed.contains(crosshairPosition) {
+                                drawBoundingBox(wordBoundingBoxTransformed, on: drawingLayer)
+                                print("Word: \(word)")
+                            }
+                        } catch {
+                            print("Error in wordRange")
+                        }
+                    }
+                }
             }
         }
+//        }
     }
 
     private func transformBoundingBox(_ boundingBox: CGRect, for layer: CALayer) -> CGRect {

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject var cameraManager = CameraManager()
+    @StateObject var appState = AppState()
 
     var body: some View {
         ZStack {
@@ -18,6 +19,7 @@ struct ContentView: View {
             if let previewLayer = cameraManager.previewLayer {
                 BoundingBoxesView(observations: cameraManager.textObservations, previewLayer: previewLayer)
                     .edgesIgnoringSafeArea(.all)
+                    .environmentObject(appState)
             }
 
             Image(systemName: "circle")
@@ -37,6 +39,9 @@ struct ContentView: View {
     }
 
     func snapWord() {
+        if let word = appState.word {
+            print("Word: \(word)")
+        }
         // Logic to get the word under the crosshair and print it
     }
 }
