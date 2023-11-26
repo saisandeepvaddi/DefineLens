@@ -15,7 +15,7 @@ class CameraManager: NSObject, ObservableObject {
 
     @Published var textObservations: [VNRecognizedTextObservation] = []
 
-    private let frameProcessingInterval: TimeInterval = 1.0 / 10.0 // 10 frames per second
+    private let frameProcessingInterval: TimeInterval = 1.0 / 30.0 // 10 frames per second
     private var lastFrameProcessingTime: TimeInterval = 0
 
     override init() {

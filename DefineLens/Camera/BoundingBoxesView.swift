@@ -47,7 +47,8 @@ struct BoundingBoxesView: UIViewRepresentable {
                             }
 
                             let wordBoundingBox = boxObservation.boundingBox
-                            let wordBoundingBoxTransformed = transformBoundingBox(wordBoundingBox, for: drawingLayer.bounds)
+                            let wordBoundingBoxTransformed = transformBoundingBox(
+                                wordBoundingBox, for: drawingLayer.bounds)
 
                             if wordBoundingBoxTransformed.contains(crosshairPosition) {
                                 drawBoundingBox(wordBoundingBoxTransformed, on: drawingLayer)
