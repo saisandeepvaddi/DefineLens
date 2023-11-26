@@ -15,6 +15,9 @@ class CameraManager: NSObject, ObservableObject {
 
     @Published var textObservations: [VNRecognizedTextObservation] = []
 
+    private let frameProcessingInterval: TimeInterval = 1.0 / 10.0 // 10 frames per second
+    private var lastFrameProcessingTime: TimeInterval = 0
+
     override init() {
         super.init()
         setupCaptureSession()
@@ -77,8 +80,12 @@ class CameraManager: NSObject, ObservableObject {
 
 extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
-        processFrame(pixelBuffer)
+        let currentTime = CACurrentMediaTime()
+        if currentTime - lastFrameProcessingTime >= frameProcessingInterval {
+            lastFrameProcessingTime = currentTime
+            guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+            processFrame(pixelBuffer)
+        }
     }
 }
 
