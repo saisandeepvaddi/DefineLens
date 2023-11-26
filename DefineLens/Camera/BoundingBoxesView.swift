@@ -28,12 +28,12 @@ struct BoundingBoxesView: UIViewRepresentable {
         drawingLayer.frame = uiView.bounds
         uiView.layer.addSublayer(drawingLayer)
 
-//        DispatchQueue.main.async {
+        let crosshairPosition = CGPoint(x: UIScreen.main.bounds.midX, y: UIScreen.main.bounds.midY)
+
         for observation in observations {
             let boundingBox = observation.boundingBox
-            let transformedBox = transformBoundingBox(boundingBox, for: drawingLayer)
-//            let transformedBox = convertBoundingBoxCoordinates(boundingBox: boundingBox, to: bounds)
-            let crosshairPosition = CGPoint(x: UIScreen.main.bounds.midX, y: UIScreen.main.bounds.midY)
+            let transformedBox = transformBoundingBox(boundingBox, for: drawingLayer.bounds)
+
             if transformedBox.contains(crosshairPosition) {
                 guard let candidate = observation.topCandidates(1).first else { continue }
                 let fullString = candidate.string
@@ -47,7 +47,7 @@ struct BoundingBoxesView: UIViewRepresentable {
                             }
 
                             let wordBoundingBox = boxObservation.boundingBox
-                            let wordBoundingBoxTransformed = transformBoundingBox(wordBoundingBox, for: drawingLayer)
+                            let wordBoundingBoxTransformed = transformBoundingBox(wordBoundingBox, for: drawingLayer.bounds)
 
                             if wordBoundingBoxTransformed.contains(crosshairPosition) {
                                 drawBoundingBox(wordBoundingBoxTransformed, on: drawingLayer)
@@ -63,30 +63,5 @@ struct BoundingBoxesView: UIViewRepresentable {
                 }
             }
         }
-//        }
-    }
-
-    private func transformBoundingBox(_ boundingBox: CGRect, for layer: CALayer) -> CGRect {
-        var transform = CGAffineTransform.identity
-
-        transform = transform.scaledBy(x: layer.bounds.width, y: -layer.bounds.height)
-        transform = transform.translatedBy(x: 0, y: -1)
-
-        return boundingBox.applying(transform)
-    }
-
-    private func drawBoundingBox(_ rect: CGRect, on layer: CALayer) {
-        let boxLayer = CAShapeLayer()
-        boxLayer.frame = rect
-        boxLayer.borderColor = UIColor.red.cgColor
-        boxLayer.borderWidth = 2.0
-        layer.addSublayer(boxLayer)
-    }
-
-    private func createBoundingBoxView(frame: CGRect) -> UIView {
-        let boxView = UIView(frame: frame)
-        boxView.layer.borderColor = UIColor.red.cgColor
-        boxView.layer.borderWidth = 2
-        return boxView
     }
 }

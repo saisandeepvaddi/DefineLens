@@ -59,11 +59,5 @@ struct ContentView: View {
             self.navigateToDefinition = true
             self.recognizedWord = word
         }
-
-        // Logic to get the word under the crosshair and print it
     }
 }
-
-// #Preview {
-//    ContentView()
-// }
