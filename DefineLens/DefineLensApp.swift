@@ -12,7 +12,9 @@ import SwiftUI
 struct DefineLensApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+//            ContentView()
+//            ScannerView()
+            DataScannerView()
         }
     }
 }
