@@ -13,16 +13,21 @@ struct ScannerView: UIViewControllerRepresentable {
     typealias UIViewControllerType = DataScannerViewController
 
     @Binding var startScanning: Bool
+    @Binding var recognizedStrings: [String]
 
     func makeUIViewController(context: Context) -> DataScannerViewController {
         let viewController = DataScannerViewController(
             recognizedDataTypes: [.text()],
-            qualityLevel: .fast,
+            qualityLevel: .accurate,
             recognizesMultipleItems: true,
-            isHighFrameRateTrackingEnabled: true,
+//            isGuidanceEnabled: true,
             isHighlightingEnabled: true
         )
 
+//        let midX = UIScreen.main.bounds.midX
+//        let midY = UIScreen.main.bounds.midY
+
+//        viewController.regionOfInterest = CGRect(x: midX, y: midY, width: .infinity, height: 20)
         viewController.delegate = context.coordinator
 
         return viewController
@@ -31,6 +36,7 @@ struct ScannerView: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: DataScannerViewController, context: Context) {
         if startScanning {
             try? uiViewController.startScanning()
+            print("Bounds: \(uiViewController.view.bounds)")
             print("Started")
         } else {
             uiViewController.stopScanning()
@@ -48,69 +54,53 @@ struct ScannerView: UIViewControllerRepresentable {
             self.parent = parent
         }
 
-//        func startScanner() {
-//            guard let dataScannerViewController = dataScannerViewController else {
-//                print("dataScannerViewController is not initialized in startScanner...")
-//                return
-//            }
-//            if self.isRunning {
-//                print("Already running")
-//                return
-//            }
+//        func dataScanner(_ dataScanner: DataScannerViewController, didTapOn item: RecognizedItem) {
+//            switch item {
+//            case .text(let text):
+//                print("Found text: \(text)")
 //
-//            var scannerAvailable: Bool = DataScannerViewController.isSupported &&
-//                DataScannerViewController.isAvailable
-//            do {
-//                if !scannerAvailable {
-//                    print("Scanner not available to start")
-//                    return
-//                }
-//                try dataScannerViewController.startScanning()
-//                self.isRunning = true
-//                print("Scanner started")
-//            } catch {
-//                print("Unable to start scanner: \(error)")
+//            default:
+//                print("Default case")
 //            }
 //        }
-//
-//        func stopScanner() {
-//            DispatchQueue.main.async {
-//                guard let dataScannerViewController = dataScannerViewController else {
-//                    print("dataScannerViewController is not initialized in stopScanner...")
-//                    return
-//                }
-//                if !self.isRunning {
-//                    print("Not running")
-//                }
-//                var scannerAvailable: Bool = DataScannerViewController.isSupported &&
-//                    DataScannerViewController.isAvailable
-//
-//                if !scannerAvailable {
-//                    print("Scanner not available to stop")
-//                    return
-//                }
-//                dataScannerViewController.stopScanning()
-//                dataScannerViewController.dismiss(animated: true)
-//                self.isRunning = false
-//                print("Scanner stopped")
-//            }
-//        }
-
-        func dataScanner(_ dataScanner: DataScannerViewController, didTapOn item: RecognizedItem) {
-            switch item {
-            case .text(let text):
-                print("Found text: \(text)")
-
-            default:
-                print("Default case")
-            }
-        }
 
         func dataScanner(_ dataScanner: DataScannerViewController, didAdd addedItems: [RecognizedItem], allItems: [RecognizedItem]) {
             addedItems.forEach { item in
                 switch item {
                 case .text(let text):
-                    print("Added text: \(text)")
+
+                    let crosshairX = UIScreen.main.bounds.midX
+                    let crosshairY = UIScreen.main.bounds.midY
+                    let scale = UIScreen.main.scale
+                    let viewBounds = dataScanner.view.bounds
+                    let crosshairPoint = CGPoint(x: crosshairX / viewBounds.width, y: crosshairY / viewBounds.height)
+
+                    let observation = text.observation
+                    let boundingBox = observation.boundingBox
+
+                    if boundingBox.contains(crosshairPoint) {
+                        guard let candidate = observation.topCandidates(1).first else { return }
+                        let fullString = text.transcript
+                        let words = fullString.split(separator: " ").map(String.init)
+                        for word in words {
+                            if let wordRange = fullString.range(of: word) {
+                                do {
+                                    let boxObservation = try candidate.boundingBox(for: wordRange)
+                                    guard let boxObservation = boxObservation else {
+                                        continue
+                                    }
+
+                                    let wordBoundingBox = boxObservation.boundingBox
+                                    if wordBoundingBox.contains(crosshairPoint) {
+                                        print("Word: \(word) \(wordRange) \(wordBoundingBox)")
+                                        self.parent.recognizedStrings.append(word)
+                                    }
+                                } catch {
+                                    print("Error in wordRange")
+                                }
+                            }
+                        }
+                    }
 
                 default:
                     print("Default case")
@@ -118,16 +108,16 @@ struct ScannerView: UIViewControllerRepresentable {
             }
         }
 
-        func dataScanner(_ dataScanner: DataScannerViewController, didRemove removedItems: [RecognizedItem], allItems: [RecognizedItem]) {
-            removedItems.forEach { item in
-                switch item {
-                case .text(let text):
-                    print("Removed text: \(text)")
-
-                default:
-                    print("Default case")
-                }
-            }
-        }
+//        func dataScanner(_ dataScanner: DataScannerViewController, didRemove removedItems: [RecognizedItem], allItems: [RecognizedItem]) {
+//            removedItems.forEach { item in
+//                switch item {
+//                case .text(let text):
+//                    print("Removed text: \(text)")
+//
+//                default:
+//                    print("Default case")
+//                }
+//            }
+//        }
     }
 }
