@@ -32,6 +32,7 @@ struct BoundingBoxesView: UIViewRepresentable {
         for observation in observations {
             let boundingBox = observation.boundingBox
             let transformedBox = transformBoundingBox(boundingBox, for: drawingLayer)
+//            let transformedBox = convertBoundingBoxCoordinates(boundingBox: boundingBox, to: bounds)
             let crosshairPosition = CGPoint(x: UIScreen.main.bounds.midX, y: UIScreen.main.bounds.midY)
             if transformedBox.contains(crosshairPosition) {
                 guard let candidate = observation.topCandidates(1).first else { continue }
@@ -47,6 +48,7 @@ struct BoundingBoxesView: UIViewRepresentable {
 
                             let wordBoundingBox = boxObservation.boundingBox
                             let wordBoundingBoxTransformed = transformBoundingBox(wordBoundingBox, for: drawingLayer)
+//                            let wordBoundingBoxTransformed = convertBoundingBoxCoordinates(boundingBox: wordBoundingBox, to: bounds)
 
                             if wordBoundingBoxTransformed.contains(crosshairPosition) {
                                 drawBoundingBox(wordBoundingBoxTransformed, on: drawingLayer)
