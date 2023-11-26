@@ -8,6 +8,8 @@ import AVFoundation
 import UIKit
 import Vision
 
+let FRAMES_PER_SECOND = 24.0
+
 class CameraManager: NSObject, ObservableObject {
     private var captureSession: AVCaptureSession?
     private var videoOutput: AVCaptureVideoDataOutput?
@@ -15,7 +17,7 @@ class CameraManager: NSObject, ObservableObject {
 
     @Published var textObservations: [VNRecognizedTextObservation] = []
 
-    private let frameProcessingInterval: TimeInterval = 1.0 / 30.0 // 10 frames per second
+    private let frameProcessingInterval: TimeInterval = 1.0 / FRAMES_PER_SECOND
     private var lastFrameProcessingTime: TimeInterval = 0
 
     override init() {
@@ -27,14 +29,12 @@ class CameraManager: NSObject, ObservableObject {
         captureSession = AVCaptureSession()
         guard let captureSession = captureSession else { return }
 
-        // Setup input (camera)
         guard let videoDevice = AVCaptureDevice.default(for: .video),
               let videoInput = try? AVCaptureDeviceInput(device: videoDevice) else { return }
         if captureSession.canAddInput(videoInput) {
             captureSession.addInput(videoInput)
         }
 
-        // Setup output
         videoOutput = AVCaptureVideoDataOutput()
         guard let videoOutput = videoOutput else { return }
         if captureSession.canAddOutput(videoOutput) {
@@ -57,25 +57,6 @@ class CameraManager: NSObject, ObservableObject {
             self.previewLayer?.videoGravity = .resizeAspectFill
         }
     }
-
-    func processFrame(_ pixelBuffer: CVPixelBuffer) {
-        let request = VNRecognizeTextRequest { [weak self] request, _ in
-            guard let observations = request.results as? [VNRecognizedTextObservation] else { return }
-            self?.drawBoundingBoxes(observations)
-        }
-        request.recognitionLevel = .accurate
-        request.usesLanguageCorrection = false
-
-        let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: orientationForDeviceOrientation(), options: [:])
-
-        try? imageRequestHandler.perform([request])
-    }
-
-    func drawBoundingBoxes(_ observations: [VNRecognizedTextObservation]) {
-        DispatchQueue.main.async {
-            self.textObservations = observations
-        }
-    }
 }
 
 extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
@@ -85,6 +66,25 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
             lastFrameProcessingTime = currentTime
             guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
             processFrame(pixelBuffer)
+        }
+    }
+
+    func processFrame(_ pixelBuffer: CVPixelBuffer) {
+        let request = VNRecognizeTextRequest { [weak self] request, _ in
+            guard let observations = request.results as? [VNRecognizedTextObservation] else { return }
+            self?.updateObservations(observations)
+        }
+        request.recognitionLevel = .accurate
+        request.usesLanguageCorrection = false
+
+        let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: orientationForDeviceOrientation(), options: [:])
+
+        try? imageRequestHandler.perform([request])
+    }
+
+    func updateObservations(_ observations: [VNRecognizedTextObservation]) {
+        DispatchQueue.main.async {
+            self.textObservations = observations
         }
     }
 }

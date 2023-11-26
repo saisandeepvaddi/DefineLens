@@ -7,11 +7,25 @@
 
 import SwiftUI
 
+extension String {
+    func capitalizingFirstLetter() -> String {
+        return prefix(1).capitalized + dropFirst().lowercased()
+    }
+}
+
+func cleanWord(_ word: String) -> String {
+    let regex = "[^a-zA-Z0-9 \\-]" // Regular expression to match unwanted characters
+    let cleanedWord = word.replacingOccurrences(of: regex, with: "", options: .regularExpression)
+    let capitalizedWord = cleanedWord.capitalizingFirstLetter()
+    return capitalizedWord
+}
+
 struct ContentView: View {
     @StateObject var cameraManager = CameraManager()
     @StateObject var appState = AppState()
     @State private var navigateToDefinition = false
     @State private var recognizedWord: String?
+
     var body: some View {
         NavigationView {
             ZStack {
@@ -19,11 +33,9 @@ struct ContentView: View {
                     .edgesIgnoringSafeArea(.all)
 
                 if let previewLayer = cameraManager.previewLayer {
-                    BoundingBoxesView(observations: self.cameraManager.textObservations, previewLayer: previewLayer, onWordChange: { newWord in
-                        self.appState.word = newWord
-                    })
-                    .edgesIgnoringSafeArea(.all)
-                    .environmentObject(self.appState)
+                    BoundingBoxesView(observations: self.cameraManager.textObservations, previewLayer: previewLayer, onWordChange: self.onWordChange)
+                        .edgesIgnoringSafeArea(.all)
+                        .environmentObject(self.appState)
                 }
 
                 Image(systemName: "circle")
@@ -38,7 +50,7 @@ struct ContentView: View {
                     Button(action: {
                         self.snapWord()
                     }) {
-                        Text(self.appState.word ?? "Check")
+                        Text(cleanWord(self.appState.word ?? "Check"))
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(Color.blue)
@@ -54,10 +66,14 @@ struct ContentView: View {
         }
     }
 
-    func snapWord() {
+    private func onWordChange(newWord: String) {
+        self.appState.word = newWord
+    }
+
+    private func snapWord() {
         if let word = appState.word {
             self.navigateToDefinition = true
-            self.recognizedWord = word
+            self.recognizedWord = cleanWord(word)
         }
     }
 }
