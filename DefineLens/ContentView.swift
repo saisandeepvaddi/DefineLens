@@ -20,10 +20,12 @@ struct ContentView: View {
                     .edgesIgnoringSafeArea(.all)
             }
 
-            // Crosshair in the center
-            Image(systemName: "cross.circle.fill")
+            Image(systemName: "circle")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 15, height: 15)
                 .foregroundColor(.red)
-                .position(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height / 2)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
 
             VStack {
                 Spacer()

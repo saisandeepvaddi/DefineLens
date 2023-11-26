@@ -56,15 +56,8 @@ class CameraManager: NSObject, ObservableObject {
     }
 
     func processFrame(_ pixelBuffer: CVPixelBuffer) {
-//        let width = CVPixelBufferGetWidth(pixelBuffer)
-//        let height = CVPixelBufferGetHeight(pixelBuffer)
-
         let request = VNRecognizeTextRequest { [weak self] request, _ in
             guard let observations = request.results as? [VNRecognizedTextObservation] else { return }
-//            for observation in observations {
-//
-//                self?.drawBoundingBoxes(observations)
-//            }
             self?.drawBoundingBoxes(observations)
         }
         request.recognitionLevel = .accurate
@@ -76,8 +69,6 @@ class CameraManager: NSObject, ObservableObject {
     }
 
     func drawBoundingBoxes(_ observations: [VNRecognizedTextObservation]) {
-        // Process observations to get bounding boxes for individual words
-        // Draw red rectangles on the bounding boxes
         DispatchQueue.main.async {
             self.textObservations = observations
         }

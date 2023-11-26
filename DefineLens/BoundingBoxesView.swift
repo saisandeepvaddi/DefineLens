@@ -30,8 +30,10 @@ struct BoundingBoxesView: UIViewRepresentable {
         for observation in observations {
             let boundingBox = observation.boundingBox
             let transformedBox = transformBoundingBox(boundingBox, for: drawingLayer)
-
-            drawBoundingBox(transformedBox, on: drawingLayer)
+            let crosshairPosition = CGPoint(x: UIScreen.main.bounds.midX, y: UIScreen.main.bounds.midY)
+            if transformedBox.contains(crosshairPosition) {
+                drawBoundingBox(transformedBox, on: drawingLayer)
+            }
         }
     }
 
