@@ -17,12 +17,16 @@
 		4454ECF82B0FED8000AF3E3F /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4454ECF72B0FED8000AF3E3F /* VideoView.swift */; };
 		4459D7DE2B0D1AAC0029359E /* CrosshairView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4459D7DD2B0D1AAC0029359E /* CrosshairView.swift */; };
 		44B827F22B1030E60084CD09 /* WordDefinitionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44B827F12B1030E60084CD09 /* WordDefinitionView.swift */; };
-		44CFDDF22B0B20CE0002ECAB /* DefineLensApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CFDDF12B0B20CE0002ECAB /* DefineLensApp.swift */; };
-		44CFDDF42B0B20CE0002ECAB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CFDDF32B0B20CE0002ECAB /* ContentView.swift */; };
+		44CFDDF22B0B20CE0002ECAB /* Main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CFDDF12B0B20CE0002ECAB /* Main.swift */; };
+		44CFDDF42B0B20CE0002ECAB /* ContentViewOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CFDDF32B0B20CE0002ECAB /* ContentViewOld.swift */; };
 		44CFDDF62B0B20CF0002ECAB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 44CFDDF52B0B20CF0002ECAB /* Assets.xcassets */; };
 		44CFDDFA2B0B20CF0002ECAB /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 44CFDDF92B0B20CF0002ECAB /* Preview Assets.xcassets */; };
 		44CFDE032B0B2F490002ECAB /* DictionaryAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CFDE022B0B2F490002ECAB /* DictionaryAPI.swift */; };
 		44CFDE052B0B2FDA0002ECAB /* WordDefinitionCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CFDE042B0B2FDA0002ECAB /* WordDefinitionCache.swift */; };
+		44F0D80E2B12F9760052BC2C /* CameraManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F0D80D2B12F9760052BC2C /* CameraManager.swift */; };
+		44F0D8102B12FA700052BC2C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F0D80F2B12FA700052BC2C /* ContentView.swift */; };
+		44F0D8122B12FAB70052BC2C /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F0D8112B12FAB70052BC2C /* CameraPreview.swift */; };
+		44F0D8142B12FDFE0052BC2C /* BoundingBoxesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F0D8132B12FDFE0052BC2C /* BoundingBoxesView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,13 +41,17 @@
 		4459D7DD2B0D1AAC0029359E /* CrosshairView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrosshairView.swift; sourceTree = "<group>"; };
 		44B827F12B1030E60084CD09 /* WordDefinitionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordDefinitionView.swift; sourceTree = "<group>"; };
 		44CFDDEE2B0B20CE0002ECAB /* DefineLens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DefineLens.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		44CFDDF12B0B20CE0002ECAB /* DefineLensApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefineLensApp.swift; sourceTree = "<group>"; };
-		44CFDDF32B0B20CE0002ECAB /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		44CFDDF12B0B20CE0002ECAB /* Main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Main.swift; sourceTree = "<group>"; };
+		44CFDDF32B0B20CE0002ECAB /* ContentViewOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewOld.swift; sourceTree = "<group>"; };
 		44CFDDF52B0B20CF0002ECAB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		44CFDDF72B0B20CF0002ECAB /* DefineLens.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DefineLens.entitlements; sourceTree = "<group>"; };
 		44CFDDF92B0B20CF0002ECAB /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		44CFDE022B0B2F490002ECAB /* DictionaryAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryAPI.swift; sourceTree = "<group>"; };
 		44CFDE042B0B2FDA0002ECAB /* WordDefinitionCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordDefinitionCache.swift; sourceTree = "<group>"; };
+		44F0D80D2B12F9760052BC2C /* CameraManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraManager.swift; sourceTree = "<group>"; };
+		44F0D80F2B12FA700052BC2C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		44F0D8112B12FAB70052BC2C /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
+		44F0D8132B12FDFE0052BC2C /* BoundingBoxesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoundingBoxesView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,11 +84,31 @@
 		44CFDDF02B0B20CE0002ECAB /* DefineLens */ = {
 			isa = PBXGroup;
 			children = (
-				44CFDDF12B0B20CE0002ECAB /* DefineLensApp.swift */,
-				44CFDDF32B0B20CE0002ECAB /* ContentView.swift */,
+				44F0D80C2B12F9130052BC2C /* Old */,
+				44CFDDF12B0B20CE0002ECAB /* Main.swift */,
 				44CFDDF52B0B20CF0002ECAB /* Assets.xcassets */,
 				44CFDDF72B0B20CF0002ECAB /* DefineLens.entitlements */,
 				44CFDDF82B0B20CF0002ECAB /* Preview Content */,
+				44F0D80D2B12F9760052BC2C /* CameraManager.swift */,
+				44F0D80F2B12FA700052BC2C /* ContentView.swift */,
+				44F0D8112B12FAB70052BC2C /* CameraPreview.swift */,
+				44F0D8132B12FDFE0052BC2C /* BoundingBoxesView.swift */,
+			);
+			path = DefineLens;
+			sourceTree = "<group>";
+		};
+		44CFDDF82B0B20CF0002ECAB /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				44CFDDF92B0B20CF0002ECAB /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		44F0D80C2B12F9130052BC2C /* Old */ = {
+			isa = PBXGroup;
+			children = (
+				44CFDDF32B0B20CE0002ECAB /* ContentViewOld.swift */,
 				44CFDE022B0B2F490002ECAB /* DictionaryAPI.swift */,
 				44CFDE042B0B2FDA0002ECAB /* WordDefinitionCache.swift */,
 				4442BB602B0C8151007FCB91 /* DictionaryResponse.swift */,
@@ -94,15 +122,7 @@
 				4454ECF72B0FED8000AF3E3F /* VideoView.swift */,
 				44B827F12B1030E60084CD09 /* WordDefinitionView.swift */,
 			);
-			path = DefineLens;
-			sourceTree = "<group>";
-		};
-		44CFDDF82B0B20CF0002ECAB /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				44CFDDF92B0B20CF0002ECAB /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
+			path = Old;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -175,17 +195,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				44CFDDF42B0B20CE0002ECAB /* ContentView.swift in Sources */,
+				44CFDDF42B0B20CE0002ECAB /* ContentViewOld.swift in Sources */,
 				442907F02B0ECCAB0023D2C6 /* PhotoCameraManager.swift in Sources */,
+				44F0D8102B12FA700052BC2C /* ContentView.swift in Sources */,
 				44B827F22B1030E60084CD09 /* WordDefinitionView.swift in Sources */,
 				442907F42B0F05650023D2C6 /* CameraView.swift in Sources */,
+				44F0D80E2B12F9760052BC2C /* CameraManager.swift in Sources */,
 				44CFDE032B0B2F490002ECAB /* DictionaryAPI.swift in Sources */,
 				44CFDE052B0B2FDA0002ECAB /* WordDefinitionCache.swift in Sources */,
+				44F0D8142B12FDFE0052BC2C /* BoundingBoxesView.swift in Sources */,
 				4454ECF82B0FED8000AF3E3F /* VideoView.swift in Sources */,
 				4442BB612B0C8151007FCB91 /* DictionaryResponse.swift in Sources */,
 				4454ECF42B0FE62700AF3E3F /* VideoCameraManager.swift in Sources */,
+				44F0D8122B12FAB70052BC2C /* CameraPreview.swift in Sources */,
 				442907F22B0ECE0E0023D2C6 /* DefinitionView.swift in Sources */,
-				44CFDDF22B0B20CE0002ECAB /* DefineLensApp.swift in Sources */,
+				44CFDDF22B0B20CE0002ECAB /* Main.swift in Sources */,
 				4459D7DE2B0D1AAC0029359E /* CrosshairView.swift in Sources */,
 				4454ECF62B0FE74B00AF3E3F /* TextRecognizer.swift in Sources */,
 				442908002B0F1C7D0023D2C6 /* PhotoTextRecognizer.swift in Sources */,

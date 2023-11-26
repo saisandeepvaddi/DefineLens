@@ -9,7 +9,7 @@ import os.log
 import SwiftUI
 
 @main
-struct DefineLensApp: App {
+struct Main: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
