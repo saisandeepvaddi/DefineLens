@@ -10,6 +10,21 @@
 import SwiftUI
 import Vision
 
+func areEqual(_ array1: [VNRecognizedTextObservation], _ array2: [VNRecognizedTextObservation]) -> Bool {
+    guard array1.count == array2.count else {
+        return false
+    }
+
+    for (observation1, observation2) in zip(array1, array2) {
+        if observation1.boundingBox != observation2.boundingBox {
+            // Modify this condition to include other properties you want to compare
+            return false
+        }
+    }
+
+    return true
+}
+
 struct BoundingBoxesView: UIViewRepresentable {
     var observations: [VNRecognizedTextObservation]
     var previewLayer: CALayer
@@ -22,6 +37,14 @@ struct BoundingBoxesView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: UIView, context: Context) {
+        if areEqual(context.coordinator.prevObservations, observations) {
+            return
+        } else {
+            print("Not equal: \(Date.now)")
+            context.coordinator.prevObservations = observations
+        }
+        print("Updating")
+
         uiView.layer.sublayers?.removeSubrange(1...)
 
         let drawingLayer = CALayer()
@@ -64,5 +87,13 @@ struct BoundingBoxesView: UIViewRepresentable {
                 }
             }
         }
+    }
+
+    func makeCoordinator() -> Coordinator {
+        return Coordinator()
+    }
+
+    class Coordinator {
+        var prevObservations: [VNRecognizedTextObservation] = []
     }
 }
