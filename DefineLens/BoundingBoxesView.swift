@@ -13,7 +13,7 @@ import Vision
 struct BoundingBoxesView: UIViewRepresentable {
     var observations: [VNRecognizedTextObservation]
     var previewLayer: CALayer
-    @EnvironmentObject var appState: AppState
+    var onWordChange: (String) -> Void
 
     func makeUIView(context: Context) -> UIView {
         let boundingBoxView = UIView(frame: previewLayer.frame)
@@ -48,11 +48,13 @@ struct BoundingBoxesView: UIViewRepresentable {
 
                             let wordBoundingBox = boxObservation.boundingBox
                             let wordBoundingBoxTransformed = transformBoundingBox(wordBoundingBox, for: drawingLayer)
-//                            let wordBoundingBoxTransformed = convertBoundingBoxCoordinates(boundingBox: wordBoundingBox, to: bounds)
 
                             if wordBoundingBoxTransformed.contains(crosshairPosition) {
                                 drawBoundingBox(wordBoundingBoxTransformed, on: drawingLayer)
-                                print("Word: \(word)")
+
+                                DispatchQueue.main.async {
+                                    onWordChange(word)
+                                }
                             }
                         } catch {
                             print("Error in wordRange")
