@@ -14,15 +14,26 @@ struct CameraPreview: UIViewRepresentable {
     func makeUIView(context: Context) -> some UIView {
         let view = UIView()
         if let previewLayer = cameraManager.previewLayer {
-            previewLayer.frame = view.bounds
+            previewLayer.frame = view.frame
+            print("Added preview Layer")
+
             view.layer.addSublayer(previewLayer)
+        } else {
+            print("No preview Layer")
         }
         return view
     }
 
     func updateUIView(_ uiView: UIViewType, context: Context) {
         if let previewLayer = cameraManager.previewLayer {
-            previewLayer.frame = uiView.bounds
+            previewLayer.frame = uiView.frame
+            if previewLayer.superlayer != uiView.layer {
+                uiView.layer.addSublayer(previewLayer)
+            }
+        } else {
+            for layer in uiView.layer.sublayers ?? [] {
+                layer.removeFromSuperlayer()
+            }
         }
     }
 }

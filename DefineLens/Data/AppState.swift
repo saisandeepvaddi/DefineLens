@@ -7,6 +7,12 @@
 
 import Foundation
 
+struct CustomRecognizedText {
+    var text: String
+    var boundingBox: CGRect
+}
+
 class AppState: ObservableObject {
     @Published var word: String?
+    @Published var recognizedTexts: [CustomRecognizedText]?
 }

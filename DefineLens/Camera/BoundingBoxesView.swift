@@ -37,13 +37,13 @@ struct BoundingBoxesView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: UIView, context: Context) {
-        if areEqual(context.coordinator.prevObservations, observations) {
-            return
-        } else {
-            print("Not equal: \(Date.now)")
-            context.coordinator.prevObservations = observations
-        }
-        print("Updating")
+//        if areEqual(context.coordinator.prevObservations, observations) {
+//            return
+//        } else {
+//            print("Not equal: \(Date.now)")
+//            context.coordinator.prevObservations = observations
+//        }
+//        print("Updating")
 
         uiView.layer.sublayers?.removeSubrange(1...)
 
@@ -57,35 +57,35 @@ struct BoundingBoxesView: UIViewRepresentable {
             let boundingBox = observation.boundingBox
             let transformedBox = transformBoundingBox(boundingBox, for: drawingLayer.bounds)
 
-            if transformedBox.contains(crosshairPosition) {
-                guard let candidate = observation.topCandidates(1).first else { continue }
-                let fullString = candidate.string
-                let words = fullString.split(separator: " ").map(String.init)
-                for word in words {
-                    if let wordRange = fullString.range(of: word) {
-                        do {
-                            let boxObservation = try candidate.boundingBox(for: wordRange)
-                            guard let boxObservation = boxObservation else {
-                                continue
-                            }
-
-                            let wordBoundingBox = boxObservation.boundingBox
-                            let wordBoundingBoxTransformed = transformBoundingBox(
-                                wordBoundingBox, for: drawingLayer.bounds)
-
-                            if wordBoundingBoxTransformed.contains(crosshairPosition) {
-                                drawBoundingBox(wordBoundingBoxTransformed, on: drawingLayer)
-
-                                DispatchQueue.main.async {
-                                    onWordChange(word)
-                                }
-                            }
-                        } catch {
-                            print("Error in wordRange")
-                        }
-                    }
-                }
-            }
+//            if transformedBox.contains(crosshairPosition) {
+//                guard let candidate = observation.topCandidates(1).first else { continue }
+//                let fullString = candidate.string
+//                let words = fullString.split(separator: " ").map(String.init)
+//                for word in words {
+//                    if let wordRange = fullString.range(of: word) {
+//                        do {
+//                            let boxObservation = try candidate.boundingBox(for: wordRange)
+//                            guard let boxObservation = boxObservation else {
+//                                continue
+//                            }
+//
+//                            let wordBoundingBox = boxObservation.boundingBox
+//                            let wordBoundingBoxTransformed = transformBoundingBox(
+//                                wordBoundingBox, for: drawingLayer.bounds)
+//
+//                            if wordBoundingBoxTransformed.contains(crosshairPosition) {
+//                                drawBoundingBox(wordBoundingBoxTransformed, on: drawingLayer)
+//
+//                                DispatchQueue.main.async {
+//                                    onWordChange(word)
+//                                }
+//                            }
+//                        } catch {
+//                            print("Error in wordRange")
+//                        }
+//                    }
+//                }
+//            }
         }
     }
 
