@@ -24,6 +24,7 @@ struct ContentView: View {
     @StateObject var cameraManager = CameraManager()
     @StateObject var appState = AppState()
     @State private var navigateToDefinition = false
+    @State private var navigateToSettings = false
     @State private var recognizedWord: String?
 
     var body: some View {
@@ -46,6 +47,16 @@ struct ContentView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
 
                 VStack {
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            self.navigateToSettings = true
+                        }) {
+                            Image(systemName: "gearshape.fill")
+                                .frame(width: 50, height: 50)
+                                .padding(.all)
+                        }
+                    }
                     Spacer()
                     Button(action: {
                         self.snapWord()
@@ -60,6 +71,9 @@ struct ContentView: View {
                     }.padding()
                 }
                 NavigationLink(destination: DefinitionView(word: self.appState.word), isActive: self.$navigateToDefinition) {
+                    EmptyView()
+                }
+                NavigationLink(destination: SettingsView(), isActive: self.$navigateToSettings) {
                     EmptyView()
                 }
             }
