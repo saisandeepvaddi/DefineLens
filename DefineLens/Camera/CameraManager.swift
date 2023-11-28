@@ -80,7 +80,7 @@ class CameraManager: NSObject, ObservableObject {
     func addPreviewLayer(to view: UIView) {
         guard let captureSession = captureSession, previewLayer == nil else { return }
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewLayer?.frame = view.bounds
+        previewLayer?.frame = view.layer.bounds
         previewLayer?.videoGravity = .resizeAspectFill
         view.layer.addSublayer(previewLayer!)
     }
@@ -91,8 +91,8 @@ class CameraManager: NSObject, ObservableObject {
     }
 
     func startCaptureSession() {
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.captureSession?.startRunning()
+        sessionQueue.async { [weak self] in
+            self?.captureSession?.startRunning()
         }
     }
 
@@ -109,6 +109,13 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
         }
 
         processFrameImage(ciImage)
+//        guard let imageData = photo.fileDataRepresentation(),
+//              let image = UIImage(data: imageData),
+//              let pixelBuffer = image.pixelBuffer()
+//        else {
+//            return
+//        }
+//        processFrameBuffer(pixelBuffer)
     }
 
     func processFrameImage(_ ciImage: CIImage) {
@@ -145,7 +152,6 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
             guard let observations = request.results as? [VNRecognizedTextObservation] else { return }
             let imageWidth = CVPixelBufferGetWidth(pixelBuffer)
             let imageHeight = CVPixelBufferGetHeight(pixelBuffer)
-            let imageSize = CGSize(width: imageWidth, height: imageHeight)
 
             self?.updateObservationsForBuffer(observations)
         }
@@ -181,9 +187,8 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
                             let wordBoundingBox = boxObservation.boundingBox
                             let wordBoundingBoxTransformed = transformBoundingBox(
                                 wordBoundingBox, for: screenBounds)
-//                            print("Bounding box: \(wordBoundingBoxTransformed) \(crosshairPosition)\(wordBoundingBoxTransformed.contains(crosshairPosition))")
+
                             if wordBoundingBoxTransformed.contains(crosshairPosition) {
-//                                logger.info("In Word: \(word)")
                                 DispatchQueue.main.async {
                                     self.textObservations = [observation]
                                     self.wordUnderCrosshair = word
@@ -204,9 +209,59 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
                 }
             }
         }
-//        DispatchQueue.main.async {
-//            self.textObservations = observations
-//        }
+    }
+}
+
+extension CameraManager {
+    func convertToUIImage(pixelBuffer: CVPixelBuffer) -> UIImage? {
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+        let context = CIContext(options: nil)
+        guard let cgImage = context.createCGImage(ciImage, from: ciImage.extent) else {
+            return nil
+        }
+        return UIImage(cgImage: cgImage)
+    }
+}
+
+extension UIImage {
+    func pixelBuffer() -> CVPixelBuffer? {
+        let width = size.width
+        let height = size.height
+        let attrs = [kCVPixelBufferCGImageCompatibilityKey: kCFBooleanTrue,
+                     kCVPixelBufferCGBitmapContextCompatibilityKey: kCFBooleanTrue] as CFDictionary
+        var pixelBuffer: CVPixelBuffer?
+        let status = CVPixelBufferCreate(kCFAllocatorDefault,
+                                         Int(width),
+                                         Int(height),
+                                         kCVPixelFormatType_32ARGB,
+                                         attrs,
+                                         &pixelBuffer)
+
+        if status != kCVReturnSuccess {
+            return nil
+        }
+
+        CVPixelBufferLockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: 0))
+        let pixelData = CVPixelBufferGetBaseAddress(pixelBuffer!)
+
+        let rgbColorSpace = CGColorSpaceCreateDeviceRGB()
+        let context = CGContext(data: pixelData,
+                                width: Int(width),
+                                height: Int(height),
+                                bitsPerComponent: 8,
+                                bytesPerRow: CVPixelBufferGetBytesPerRow(pixelBuffer!),
+                                space: rgbColorSpace,
+                                bitmapInfo: CGImageAlphaInfo.noneSkipFirst.rawValue)
+
+        context?.translateBy(x: 0, y: height)
+        context?.scaleBy(x: 1.0, y: -1.0)
+
+        UIGraphicsPushContext(context!)
+        draw(in: CGRect(x: 0, y: 0, width: width, height: height))
+        UIGraphicsPopContext()
+        CVPixelBufferUnlockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: 0))
+
+        return pixelBuffer
     }
 }
 
