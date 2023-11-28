@@ -70,7 +70,9 @@ class CameraManager: NSObject, ObservableObject {
 
     func capturePhoto(callback: @escaping ((String?) -> Void)) {
         guard let photoOutput = photoOutput else { return }
-        capturedWordCallback = callback
+        if capturedWordCallback == nil {
+            capturedWordCallback = callback
+        }
         let photoSettings = AVCapturePhotoSettings()
         photoOutput.capturePhoto(with: photoSettings, delegate: self)
     }

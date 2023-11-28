@@ -24,7 +24,7 @@ struct CaptureButton: View {
                 self.navigateToDefinition = true
             }
         }) {
-            Text(cameraManager.wordUnderCrosshair ?? "Check")
+            Text("Check")
                 .frame(maxWidth: .infinity)
                 .padding()
                 .background(Color.blue)
@@ -32,8 +32,8 @@ struct CaptureButton: View {
                 .font(.title)
                 .cornerRadius(20)
         }.padding()
-//        NavigationLink(destination: DefinitionView(word: capturedWord), isActive: self.$navigateToDefinition) {
-//            EmptyView()
-//        }
+        NavigationLink(destination: DefinitionView(word: capturedWord), isActive: self.$navigateToDefinition) {
+            EmptyView()
+        }
     }
 }
