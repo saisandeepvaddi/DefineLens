@@ -124,7 +124,9 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
                 return
             }
 
-            self?.updateObservationsForBuffer(observations)
+            let imageBounds = ciImage.extent
+
+            self?.updateObservationsForBuffer(observations, imageBounds: imageBounds)
         }
 
         request.recognitionLevel = .accurate
@@ -153,7 +155,8 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
             let imageWidth = CVPixelBufferGetWidth(pixelBuffer)
             let imageHeight = CVPixelBufferGetHeight(pixelBuffer)
 
-            self?.updateObservationsForBuffer(observations)
+            let imageBounds = CGRect(origin: .zero, size: CGSize(width: imageWidth, height: imageHeight))
+            self?.updateObservationsForBuffer(observations, imageBounds: imageBounds)
         }
         request.recognitionLevel = .accurate
         request.usesLanguageCorrection = false
@@ -163,14 +166,15 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
         try? imageRequestHandler.perform([request])
     }
 
-    func updateObservationsForBuffer(_ observations: [VNRecognizedTextObservation]) {
-        let screenBounds = UIScreen.main.bounds
+    func updateObservationsForBuffer(_ observations: [VNRecognizedTextObservation], imageBounds: CGRect) {
+//        let screenBounds = UIScreen.main.bounds
 
-        let crosshairPosition = CGPoint(x: screenBounds.midX, y: screenBounds.midY)
+//        let crosshairPosition = CGPoint(x: screenBounds.midX, y: screenBounds.midY)
+        let crosshairPosition = CGPoint(x: imageBounds.midX, y: imageBounds.midY)
 
         for observation in observations {
             let boundingBox = observation.boundingBox
-            let transformedBox = transformBoundingBox(boundingBox, for: screenBounds)
+            let transformedBox = transformBoundingBox(boundingBox, for: imageBounds)
 
             if transformedBox.contains(crosshairPosition) {
                 guard let candidate = observation.topCandidates(1).first else { continue }
@@ -186,7 +190,7 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
 
                             let wordBoundingBox = boxObservation.boundingBox
                             let wordBoundingBoxTransformed = transformBoundingBox(
-                                wordBoundingBox, for: screenBounds)
+                                wordBoundingBox, for: imageBounds)
 
                             if wordBoundingBoxTransformed.contains(crosshairPosition) {
                                 DispatchQueue.main.async {
@@ -262,6 +266,14 @@ extension UIImage {
         CVPixelBufferUnlockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: 0))
 
         return pixelBuffer
+    }
+}
+
+extension CGRect {
+    func expandBy(widthFactor: CGFloat, heightFactor: CGFloat) -> CGRect {
+        let widthExpansion = width * widthFactor
+        let heightExpansion = height * heightFactor
+        return insetBy(dx: -widthExpansion, dy: -heightExpansion)
     }
 }
 
