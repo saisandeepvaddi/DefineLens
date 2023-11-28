@@ -5,35 +5,47 @@
 //  Created by Sai Sandeep Vaddi on 11/25/23.
 //
 
+import AVFoundation
 import SwiftUI
 import UIKit
 
-struct CameraPreview: UIViewRepresentable {
-    @ObservedObject var cameraManager: CameraManager
-
-    func makeUIView(context: Context) -> some UIView {
-        let view = UIView()
-        if let previewLayer = cameraManager.previewLayer {
-            previewLayer.frame = view.frame
-            print("Added preview Layer")
-
-            view.layer.addSublayer(previewLayer)
-        } else {
-            print("No preview Layer")
-        }
-        return view
+class CameraViewController: UIViewController {
+    var cameraManager: CameraManager
+    init(cameraManager: CameraManager) {
+        self.cameraManager = cameraManager
+        super.init(nibName: nil, bundle: nil)
     }
 
-    func updateUIView(_ uiView: UIViewType, context: Context) {
-        if let previewLayer = cameraManager.previewLayer {
-            previewLayer.frame = uiView.frame
-            if previewLayer.superlayer != uiView.layer {
-                uiView.layer.addSublayer(previewLayer)
-            }
-        } else {
-            for layer in uiView.layer.sublayers ?? [] {
-                layer.removeFromSuperlayer()
-            }
-        }
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        cameraManager.addPreviewLayer(to: view)
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        cameraManager.startCaptureSession()
+        cameraManager.addPreviewLayer(to: view)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        cameraManager.stopCaptureSession()
+        cameraManager.removePreviewLayer()
+    }
+}
+
+struct CameraPreview: UIViewControllerRepresentable {
+    var cameraManager: CameraManager
+    func makeUIViewController(context: Context) -> some UIViewController {
+        return CameraViewController(
+            cameraManager: cameraManager
+        )
+    }
+
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
 }

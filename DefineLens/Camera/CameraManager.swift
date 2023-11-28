@@ -12,18 +12,20 @@ import Vision
 let FRAMES_PER_SECOND = 24.0
 
 class CameraManager: NSObject, ObservableObject {
-    private var captureSession: AVCaptureSession?
+    var captureSession: AVCaptureSession?
     private var videoOutput: AVCaptureVideoDataOutput?
+    private var photoOutput: AVCapturePhotoOutput?
     var previewLayer: AVCaptureVideoPreviewLayer?
-    var geometry: GeometryProxy
+    var appState: AppState?
     @Published var textObservations: [VNRecognizedTextObservation] = []
     @Published var isReady: Bool = false
+    let sessionQueue = DispatchQueue(label: "videoQueue")
 
     private let frameProcessingInterval: TimeInterval = 1.0 / FRAMES_PER_SECOND
     private var lastFrameProcessingTime: TimeInterval = 0
 
-    init(geometry: GeometryProxy) {
-        self.geometry = geometry
+    init(appState: AppState? = nil) {
+        self.appState = appState
         super.init()
         setupCaptureSession()
     }
@@ -33,55 +35,120 @@ class CameraManager: NSObject, ObservableObject {
         guard let captureSession = captureSession else { return }
         captureSession.beginConfiguration()
 
-        guard let videoDevice = AVCaptureDevice.default(for: .video),
-              let videoInput = try? AVCaptureDeviceInput(device: videoDevice) else { return }
+        guard let videoDevice = AVCaptureDevice.default(for: .video) else {
+            logger.error("Device input not available..")
+            return
+        }
+
+        guard let videoInput = try? AVCaptureDeviceInput(device: videoDevice) else { return }
+
         if captureSession.canAddInput(videoInput) {
             captureSession.addInput(videoInput)
         }
 
         videoOutput = AVCaptureVideoDataOutput()
         guard let videoOutput = videoOutput else { return }
+
         if captureSession.canAddOutput(videoOutput) {
             captureSession.addOutput(videoOutput)
-            videoOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "videoQueue"))
+            videoOutput.setSampleBufferDelegate(self, queue: sessionQueue)
         }
-        setupPreviewLayer()
+
+        photoOutput = AVCapturePhotoOutput()
+
+        guard let photoOutput = photoOutput else { return }
+
+        if captureSession.canAddOutput(photoOutput) {
+            captureSession.addOutput(photoOutput)
+        }
+
+        captureSession.sessionPreset = .photo
+
         captureSession.commitConfiguration()
+    }
+
+    func capturePhoto() {
+        guard let photoOutput = photoOutput else { return }
+        let photoSettings = AVCapturePhotoSettings()
+        photoOutput.capturePhoto(with: photoSettings, delegate: self)
+    }
+
+    func addPreviewLayer(to view: UIView) {
+        guard let captureSession = captureSession, previewLayer == nil else { return }
+        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        previewLayer?.frame = view.bounds
+        previewLayer?.videoGravity = .resizeAspectFill
+        view.layer.addSublayer(previewLayer!)
+    }
+
+    func removePreviewLayer() {
+        previewLayer?.removeFromSuperlayer()
+        previewLayer = nil
+    }
+
+    func startCaptureSession() {
         DispatchQueue.global(qos: .userInitiated).async {
-            captureSession.startRunning()
-//            DispatchQueue.main.async {
-//                self.isReady = true
-//            }
+            self.captureSession?.startRunning()
         }
     }
 
-    private func setupPreviewLayer() {
-        DispatchQueue.main.async {
-            guard let captureSession = self.captureSession else {
-                print("No capture session to setupPreview")
+    func stopCaptureSession() {
+        captureSession?.stopRunning()
+    }
+}
+
+extension CameraManager: AVCapturePhotoCaptureDelegate {
+    //    func captureOutput(_ output: AVCaptureOutput, didDrop sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+    //        logger.info("Photo captured: \(Date.now)")
+    //        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+    //        processFrame(pixelBuffer)
+    //    }
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        guard let imageData = photo.fileDataRepresentation(), let ciImage = CIImage(data: imageData) else {
+            print("No Image data")
+            return
+        }
+
+        processFrameImage(ciImage)
+    }
+
+    func processFrameImage(_ ciImage: CIImage) {
+        let request = VNRecognizeTextRequest { [weak self] request, _ in
+            guard let observations = request.results as? [VNRecognizedTextObservation] else {
                 return
             }
-            self.previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-            self.previewLayer?.videoGravity = .resizeAspectFill
-            self.isReady = true
+
+            self?.updateObservationsForBuffer(observations)
         }
+
+        request.recognitionLevel = .accurate
+        request.usesLanguageCorrection = false
+
+        let imageRequestHandler = VNImageRequestHandler(ciImage: ciImage, orientation: orientationForDeviceOrientation(), options: [:])
+        try? imageRequestHandler.perform([request])
     }
 }
 
 extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        let currentTime = CACurrentMediaTime()
-        if currentTime - lastFrameProcessingTime >= frameProcessingInterval {
-            lastFrameProcessingTime = currentTime
-            guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
-            processFrame(pixelBuffer)
-        }
+//        logger.info("Getting buffer output: \(Date.now)")
+
+//        let currentTime = CACurrentMediaTime()
+//        if currentTime - lastFrameProcessingTime >= frameProcessingInterval {
+//            lastFrameProcessingTime = currentTime
+//            guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+//            processFrame(pixelBuffer)
+//        }
     }
 
-    func processFrame(_ pixelBuffer: CVPixelBuffer) {
+    func processFrameBuffer(_ pixelBuffer: CVPixelBuffer) {
         let request = VNRecognizeTextRequest { [weak self] request, _ in
             guard let observations = request.results as? [VNRecognizedTextObservation] else { return }
-            self?.updateObservations(observations, pixelBuffer)
+            let imageWidth = CVPixelBufferGetWidth(pixelBuffer)
+            let imageHeight = CVPixelBufferGetHeight(pixelBuffer)
+            let imageSize = CGSize(width: imageWidth, height: imageHeight)
+
+            self?.updateObservationsForBuffer(observations)
         }
         request.recognitionLevel = .accurate
         request.usesLanguageCorrection = false
@@ -91,21 +158,22 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
         try? imageRequestHandler.perform([request])
     }
 
-    func updateObservations(_ observations: [VNRecognizedTextObservation], _ pixelBuffer: CVPixelBuffer) {
-//        let screenBounds = UIScreen.main.bounds
-        let screenBounds = geometry.frame(in: .global)
+    func updateObservationsForBuffer(_ observations: [VNRecognizedTextObservation]) {
+        let screenBounds = UIScreen.main.bounds
+
 //        print("Screen:Geometry -> \(screenBounds) \(geometry.frame(in: .global).size)")
         let crosshairPosition = CGPoint(x: screenBounds.midX, y: screenBounds.midY)
-        let bufferWidth = CVPixelBufferGetWidth(pixelBuffer)
-        let bufferHeight = CVPixelBufferGetHeight(pixelBuffer)
-        let bufferSize = CGSize(width: bufferWidth, height: bufferHeight)
+//        let imageWidth = CVPixelBufferGetWidth(pixelBuffer)
+//        let imageHeight = CVPixelBufferGetHeight(pixelBuffer)
+//        let imageSize = CGSize(width: imageWidth, height: imageHeight)
 
-        let bufferBounds = CGRect(origin: .zero, size: bufferSize)
+//        let bufferBounds = CGRect(origin: .zero, size: imageSize)
 
         for observation in observations {
+//            logger.info("Text: \(observation.topCandidates(1).first?.string ?? "")")
             let boundingBox = observation.boundingBox
             let transformedBox = transformBoundingBox(boundingBox, for: screenBounds)
-
+//            print("TransformedBox: \(transformedBox) \(screenBounds)")
             if transformedBox.contains(crosshairPosition) {
                 guard let candidate = observation.topCandidates(1).first else { continue }
                 let fullString = candidate.string
@@ -121,11 +189,11 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
                             let wordBoundingBox = boxObservation.boundingBox
                             let wordBoundingBoxTransformed = transformBoundingBox(
                                 wordBoundingBox, for: screenBounds)
-
+//                            print("Bounding box: \(wordBoundingBoxTransformed) \(crosshairPosition)\(wordBoundingBoxTransformed.contains(crosshairPosition))")
                             if wordBoundingBoxTransformed.contains(crosshairPosition) {
-//                                logger.info("Word: \(word)")
+                                logger.info("In Word: \(word)")
                                 DispatchQueue.main.async {
-                                    self.textObservations = [observation]
+//                                    self.textObservations = [observation]
                                 }
 //                                drawBoundingBox(wordBoundingBoxTransformed, on: drawingLayer)
 //

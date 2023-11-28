@@ -21,76 +21,48 @@ func cleanWord(_ word: String) -> String {
 }
 
 struct ContentView: View {
-//    @StateObject var cameraManager = CameraManager()
-    @StateObject var appState = AppState()
+    @EnvironmentObject var appState: AppState
     @State private var navigateToDefinition = false
     @State private var navigateToSettings = false
     @State private var recognizedWord: String?
 
     var body: some View {
-        GeometryReader { geometry in
-            NavigationView {
-                ZStack {
-                    CameraContainer(geometry: geometry)
-//                    CameraPreview(cameraManager: self.cameraManager)
-//                        .edgesIgnoringSafeArea(.all)
-
-                    //                if let previewLayer = cameraManager.previewLayer {
-                    //                    BoundingBoxesView(observations: self.cameraManager.textObservations, previewLayer: previewLayer, onWordChange: self.onWordChange)
-                    //                        .edgesIgnoringSafeArea(.all)
-                    //                        .environmentObject(self.appState)
-                    //                }
-
-                    Image(systemName: "circle")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 15, height: 15)
-                        .foregroundColor(.red)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-
-                    VStack {
-                        HStack {
-                            Spacer()
-                            Button(action: {
-                                self.navigateToSettings = true
-                            }) {
-                                Image(systemName: "gearshape.fill")
-                                    .frame(width: 50, height: 50)
-                                    .padding(.all)
-                            }
-                        }
+        NavigationView {
+            ZStack {
+                CameraContainer()
+                CrosshairView()
+                VStack {
+                    HStack {
                         Spacer()
                         Button(action: {
-                            self.snapWord()
+                            self.navigateToSettings = true
                         }) {
-                            Text(cleanWord(self.appState.word ?? "Check"))
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.blue)
-                                .foregroundColor(.white)
-                                .font(.title)
-                                .cornerRadius(20)
-                        }.padding()
+                            Image(systemName: "gearshape.fill")
+                                .frame(width: 50, height: 50)
+                                .padding(.all)
+                        }
                     }
-                    NavigationLink(destination: DefinitionView(word: self.appState.word), isActive: self.$navigateToDefinition) {
-                        EmptyView()
-                    }
-                    NavigationLink(destination: SettingsView(), isActive: self.$navigateToSettings) {
-                        EmptyView()
-                    }
+                    Spacer()
+                    CaptureButton()
+                }
+                NavigationLink(destination: DefinitionView(word: self.appState.word), isActive: self.$navigateToDefinition) {
+                    EmptyView()
+                }
+                NavigationLink(destination: SettingsView(), isActive: self.$navigateToSettings) {
+                    EmptyView()
                 }
             }
         }
     }
 
-    private func onWordChange(newWord: String) {
-        self.appState.word = newWord
-    }
-
-    private func snapWord() {
-        if let word = appState.word {
-            self.navigateToDefinition = true
-            self.recognizedWord = cleanWord(word)
-        }
-    }
+//    private func onWordChange(newWord: String) {
+//        self.appState.word = newWord
+//    }
+//
+//    private func snapWord() {
+//        if let word = appState.word {
+//            self.navigateToDefinition = true
+//            self.recognizedWord = cleanWord(word)
+//        }
+//    }
 }
