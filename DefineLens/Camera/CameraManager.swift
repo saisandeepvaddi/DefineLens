@@ -19,8 +19,9 @@ class CameraManager: NSObject, ObservableObject {
     var appState: AppState?
     @Published var textObservations: [VNRecognizedTextObservation] = []
     @Published var isReady: Bool = false
+    @Published var wordUnderCrosshair: String?
     let sessionQueue = DispatchQueue(label: "videoQueue")
-
+    var capturedWordCallback: ((String?) -> Void)?
     private let frameProcessingInterval: TimeInterval = 1.0 / FRAMES_PER_SECOND
     private var lastFrameProcessingTime: TimeInterval = 0
 
@@ -67,8 +68,9 @@ class CameraManager: NSObject, ObservableObject {
         captureSession.commitConfiguration()
     }
 
-    func capturePhoto() {
+    func capturePhoto(callback: @escaping ((String?) -> Void)) {
         guard let photoOutput = photoOutput else { return }
+        capturedWordCallback = callback
         let photoSettings = AVCapturePhotoSettings()
         photoOutput.capturePhoto(with: photoSettings, delegate: self)
     }
@@ -98,11 +100,6 @@ class CameraManager: NSObject, ObservableObject {
 }
 
 extension CameraManager: AVCapturePhotoCaptureDelegate {
-    //    func captureOutput(_ output: AVCaptureOutput, didDrop sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-    //        logger.info("Photo captured: \(Date.now)")
-    //        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
-    //        processFrame(pixelBuffer)
-    //    }
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         guard let imageData = photo.fileDataRepresentation(), let ciImage = CIImage(data: imageData) else {
             print("No Image data")
@@ -161,19 +158,12 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
     func updateObservationsForBuffer(_ observations: [VNRecognizedTextObservation]) {
         let screenBounds = UIScreen.main.bounds
 
-//        print("Screen:Geometry -> \(screenBounds) \(geometry.frame(in: .global).size)")
         let crosshairPosition = CGPoint(x: screenBounds.midX, y: screenBounds.midY)
-//        let imageWidth = CVPixelBufferGetWidth(pixelBuffer)
-//        let imageHeight = CVPixelBufferGetHeight(pixelBuffer)
-//        let imageSize = CGSize(width: imageWidth, height: imageHeight)
-
-//        let bufferBounds = CGRect(origin: .zero, size: imageSize)
 
         for observation in observations {
-//            logger.info("Text: \(observation.topCandidates(1).first?.string ?? "")")
             let boundingBox = observation.boundingBox
             let transformedBox = transformBoundingBox(boundingBox, for: screenBounds)
-//            print("TransformedBox: \(transformedBox) \(screenBounds)")
+
             if transformedBox.contains(crosshairPosition) {
                 guard let candidate = observation.topCandidates(1).first else { continue }
                 let fullString = candidate.string
@@ -191,9 +181,13 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
                                 wordBoundingBox, for: screenBounds)
 //                            print("Bounding box: \(wordBoundingBoxTransformed) \(crosshairPosition)\(wordBoundingBoxTransformed.contains(crosshairPosition))")
                             if wordBoundingBoxTransformed.contains(crosshairPosition) {
-                                logger.info("In Word: \(word)")
+//                                logger.info("In Word: \(word)")
                                 DispatchQueue.main.async {
-//                                    self.textObservations = [observation]
+                                    self.textObservations = [observation]
+                                    self.wordUnderCrosshair = word
+                                    if let callback = self.capturedWordCallback {
+                                        callback(word)
+                                    }
                                 }
 //                                drawBoundingBox(wordBoundingBoxTransformed, on: drawingLayer)
 //

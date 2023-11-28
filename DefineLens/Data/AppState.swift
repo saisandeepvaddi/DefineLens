@@ -13,6 +13,6 @@ struct CustomRecognizedText {
 }
 
 class AppState: ObservableObject {
-    @Published var word: String?
     @Published var recognizedTexts: [CustomRecognizedText]?
+    @Published var capturedWord: String?
 }
