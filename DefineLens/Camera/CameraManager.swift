@@ -156,7 +156,7 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
             let imageSize = CGSize(width: cgImage.width, height: cgImage.height)
             let imageBounds = CGRect(origin: .zero, size: imageSize)
 
-            drawAnnotations(image: uiImage, observations: observations)
+//            drawAnnotations(image: uiImage, observations: observations)
 
             self?.updateObservationsForBuffer(observations, imageBounds: imageBounds)
         }

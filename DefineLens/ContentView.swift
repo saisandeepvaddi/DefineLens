@@ -35,6 +35,8 @@ struct ContentView: View {
                     .edgesIgnoringSafeArea(.all)
 
                 VStack {
+                    Spacer()
+                        .frame(height: 50)
                     HStack {
                         Spacer()
                         Button(action: {
