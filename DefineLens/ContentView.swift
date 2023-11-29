@@ -30,7 +30,10 @@ struct ContentView: View {
         NavigationView {
             ZStack {
                 CameraContainer()
+                    .edgesIgnoringSafeArea(.all)
                 CrosshairView()
+                    .edgesIgnoringSafeArea(.all)
+
                 VStack {
                     HStack {
                         Spacer()
@@ -50,6 +53,7 @@ struct ContentView: View {
                     EmptyView()
                 }
             }
+            .edgesIgnoringSafeArea(.all)
         }
     }
 
