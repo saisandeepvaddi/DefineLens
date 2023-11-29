@@ -118,24 +118,17 @@ func cgImagePropertyOrientationToUIImageOrientation(_ value: CGImagePropertyOrie
     case .leftMirrored: return .leftMirrored
     case .right: return .right
     case .rightMirrored: return .rightMirrored
-    @unknown default: return .up
     }
 }
 
 extension CameraManager: AVCapturePhotoCaptureDelegate {
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        guard let imageData = photo.fileDataRepresentation() else {
-            print("No Image data")
-            return
-        }
-
         guard let cgImage = photo.cgImageRepresentation() else {
             print("No CGImage")
             return
         }
 
         let cgOrientation = photo.metadata[String(kCGImagePropertyOrientation)] as? UInt32
-        print("Something: \(cgOrientation)")
 
         guard let cgOrientation = cgOrientation, let cgOrientation = CGImagePropertyOrientation(rawValue: cgOrientation) else {
             print("No orientation")
@@ -146,19 +139,8 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
 
         let image = UIImage(cgImage: cgImage, scale: 1.0, orientation: uiOrientation)
 
-//        let newImage = convertToUIImage(from: pixelBuffer)
-//        guard let image = newImage else {
-//            print("No image captured")
-//            return
-//        }
-        saveImageToPhotos(image)
+//        saveImageToPhotos(image)
         processFrameImage(image)
-//        if let newImage = newImage {
-//            print("Saving")
-//            saveImageToPhotos(newImage)
-//        }
-//        saveImageToPhotos(uiImage)
-//        processFrameImage(uiImage)
     }
 
     func processFrameImage(_ uiImage: UIImage) {
@@ -174,9 +156,6 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
             let imageSize = CGSize(width: cgImage.width, height: cgImage.height)
             let imageBounds = CGRect(origin: .zero, size: imageSize)
 
-//            let image = UIImage(cgImage: cgImage)
-//
-//            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
             drawAnnotations(image: uiImage, observations: observations)
 
             self?.updateObservationsForBuffer(observations, imageBounds: imageBounds)
