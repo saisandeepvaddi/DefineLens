@@ -87,7 +87,7 @@ class CameraManager: NSObject, ObservableObject {
     func addPreviewLayer(to view: UIView) {
         guard let captureSession = captureSession, previewLayer == nil else { return }
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewLayer?.frame = view.layer.bounds
+        previewLayer?.frame = view.bounds
         previewLayer?.videoGravity = .resizeAspectFill
         view.layer.addSublayer(previewLayer!)
     }
@@ -156,7 +156,7 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
             let imageSize = CGSize(width: cgImage.width, height: cgImage.height)
             let imageBounds = CGRect(origin: .zero, size: imageSize)
 
-//            drawAnnotations(image: uiImage, observations: observations)
+            drawAnnotations(image: uiImage, observations: observations)
 
             self?.updateObservationsForBuffer(observations, imageBounds: imageBounds)
         }

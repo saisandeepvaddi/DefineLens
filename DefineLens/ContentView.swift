@@ -28,15 +28,8 @@ struct ContentView: View {
 
     var body: some View {
         NavigationView {
-            ZStack {
-                CameraContainer()
-                    .edgesIgnoringSafeArea(.all)
-                CrosshairView()
-                    .edgesIgnoringSafeArea(.all)
-
-                VStack {
-                    Spacer()
-                        .frame(height: 50)
+            GeometryReader { geo in
+                VStack(spacing: 0) {
                     HStack {
                         Spacer()
                         Button(action: {
@@ -46,27 +39,32 @@ struct ContentView: View {
                                 .frame(width: 50, height: 50)
                                 .padding(.all)
                         }
+                        .padding(.top, 20)
                     }
-                    Spacer()
-                    CaptureButton()
-                }
+                    .frame(height: geo.size.height * 0.15)
+                    ZStack {
+                        CameraContainer()
+                            .edgesIgnoringSafeArea(.all)
+                        CrosshairView()
+                            .edgesIgnoringSafeArea(.all)
+                    }
+                    VStack {
+                        Spacer()
+                        CaptureButton()
+                            .padding(10)
+                    }
+                    .frame(height: geo.size.height * 0.15)
 
-                NavigationLink(destination: SettingsView(), isActive: self.$navigateToSettings) {
-                    EmptyView()
+                    NavigationLink(destination: SettingsView(), isActive: self.$navigateToSettings) {
+                        EmptyView()
+                    }
                 }
+                .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/ .all/*@END_MENU_TOKEN@*/)
             }
-            .edgesIgnoringSafeArea(.all)
         }
     }
-
-//    private func onWordChange(newWord: String) {
-//        self.appState.word = newWord
-//    }
-//
-//    private func snapWord() {
-//        if let word = appState.word {
-//            self.navigateToDefinition = true
-//            self.recognizedWord = cleanWord(word)
-//        }
-//    }
 }
+
+// #Preview {
+//    ContentView()
+// }
