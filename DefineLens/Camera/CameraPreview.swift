@@ -11,6 +11,7 @@ import UIKit
 
 class CameraViewController: UIViewController {
     var cameraManager: CameraManager
+    var previewLayer: AVCaptureVideoPreviewLayer?
     init(cameraManager: CameraManager) {
         self.cameraManager = cameraManager
         super.init(nibName: nil, bundle: nil)
@@ -23,13 +24,29 @@ class CameraViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        cameraManager.addPreviewLayer(to: view)
+        guard let captureSession = cameraManager.captureSession else {
+            print("No capture session")
+            return
+        }
+        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        guard let previewLayer = previewLayer else {
+            print("Failed to create preview layer")
+            return
+        }
+
+        previewLayer.videoGravity = .resizeAspectFill
+        previewLayer.frame = view.bounds
+        view.layer.addSublayer(previewLayer)
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        cameraManager.startCaptureSession()
-        cameraManager.addPreviewLayer(to: view)
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.cameraManager.captureSession?.startRunning()
+            DispatchQueue.main.async {
+                self.previewLayer?.frame = self.view.bounds
+            }
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -42,9 +59,11 @@ class CameraViewController: UIViewController {
 struct CameraPreview: UIViewControllerRepresentable {
     var cameraManager: CameraManager
     func makeUIViewController(context: Context) -> some UIViewController {
-        return CameraViewController(
+        let content = CameraViewController(
             cameraManager: cameraManager
         )
+
+        return content
     }
 
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}

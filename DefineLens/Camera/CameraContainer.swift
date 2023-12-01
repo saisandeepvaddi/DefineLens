@@ -13,7 +13,6 @@ struct CameraContainer: View {
 
     var body: some View {
         CameraPreview(cameraManager: self.cameraManager)
-            .edgesIgnoringSafeArea(.all)
             .onAppear {
                 self.cameraManager.appState = appState
             }
