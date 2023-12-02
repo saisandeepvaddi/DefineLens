@@ -84,19 +84,6 @@ class CameraManager: NSObject, ObservableObject {
         photoOutput.capturePhoto(with: photoSettings, delegate: self)
     }
 
-    func addPreviewLayer(to view: UIView) {
-        guard let captureSession = captureSession, previewLayer == nil else { return }
-        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewLayer?.frame = view.bounds
-        previewLayer?.videoGravity = .resizeAspectFill
-        view.layer.addSublayer(previewLayer!)
-    }
-
-    func removePreviewLayer() {
-        previewLayer?.removeFromSuperlayer()
-        previewLayer = nil
-    }
-
     func startCaptureSession() {
         sessionQueue.async { [weak self] in
             self?.captureSession?.startRunning()
@@ -139,7 +126,6 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
 
         let image = UIImage(cgImage: cgImage, scale: 1.0, orientation: uiOrientation)
 
-//        saveImageToPhotos(image)
         processFrameImage(image)
     }
 
@@ -156,7 +142,7 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
             let imageSize = CGSize(width: cgImage.width, height: cgImage.height)
             let imageBounds = CGRect(origin: .zero, size: imageSize)
 
-            drawAnnotations(image: uiImage, observations: observations)
+//            drawAnnotations(image: uiImage, observations: observations)
 
             self?.updateObservationsForBuffer(observations, imageBounds: imageBounds)
         }
@@ -183,7 +169,7 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
         request.recognitionLevel = .accurate
         request.usesLanguageCorrection = false
 
-        let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: .right, options: [:])
+        let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:])
 
         try? imageRequestHandler.perform([request])
     }

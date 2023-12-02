@@ -24,19 +24,7 @@ class CameraViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        guard let captureSession = cameraManager.captureSession else {
-            print("No capture session")
-            return
-        }
-        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        guard let previewLayer = previewLayer else {
-            print("Failed to create preview layer")
-            return
-        }
-
-        previewLayer.videoGravity = .resizeAspectFill
-        previewLayer.frame = view.bounds
-        view.layer.addSublayer(previewLayer)
+        addPreviewLayer()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -52,7 +40,29 @@ class CameraViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         cameraManager.stopCaptureSession()
-        cameraManager.removePreviewLayer()
+//        cameraManager.removePreviewLayer()
+    }
+
+    func addPreviewLayer() {
+        guard let captureSession = cameraManager.captureSession else {
+            print("No capture session")
+            return
+        }
+        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        guard let previewLayer = previewLayer else {
+            print("Failed to create preview layer")
+            return
+        }
+
+        previewLayer.videoGravity = .resizeAspectFill
+        previewLayer.frame = view.bounds
+        view.layer.addSublayer(previewLayer)
+    }
+
+    func removePreviewlayer() {
+        if let previewLayer = previewLayer {
+            previewLayer.removeFromSuperlayer()
+        }
     }
 }
 
