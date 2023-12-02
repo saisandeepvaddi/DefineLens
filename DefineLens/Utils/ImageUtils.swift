@@ -163,38 +163,25 @@ func getDeviceCGImageOrientation() -> CGImagePropertyOrientation {
     }
 }
 
-// extension CGImagePropertyOrientation {
-//    init(_ uiOrientation: UIImage.Orientation) {
-//        switch uiOrientation {
-//            case .up: self = .up
-//            case .upMirrored: self = .upMirrored
-//            case .down: self = .down
-//            case .downMirrored: self = .downMirrored
-//            case .left: self = .left
-//            case .leftMirrored: self = .leftMirrored
-//            case .right: self = .right
-//            case .rightMirrored: self = .rightMirrored
-//        }
-//    }
-// }
-
-// extension UIImage.Orientation {
-//    init(_ cgOrientation: UIImage.Orientation) {
-//        switch cgOrientation {
-//            case .up: self = .up
-//            case .upMirrored: self = .upMirrored
-//            case .down: self = .down
-//            case .downMirrored: self = .downMirrored
-//            case .left: self = .left
-//            case .leftMirrored: self = .leftMirrored
-//            case .right: self = .right
-//            case .rightMirrored: self = .rightMirrored
-//        }
-//    }
-// }
-
 func getCGImageOrientation(from uiImage: UIImage) -> CGImagePropertyOrientation {
     switch uiImage.imageOrientation {
+        case .up: return .up
+        case .upMirrored: return .upMirrored
+        case .down: return .down
+        case .downMirrored: return .downMirrored
+        case .left: return .left
+        case .leftMirrored: return .leftMirrored
+        case .right: return .right
+        case .rightMirrored: return .rightMirrored
+        @unknown default:
+            return .right
+    }
+}
+
+func cgImagePropertyOrientationToUIImageOrientation(_ value: CGImagePropertyOrientation)
+    -> UIImage.Orientation
+{
+    switch value {
         case .up: return .up
         case .upMirrored: return .upMirrored
         case .down: return .down
@@ -206,41 +193,21 @@ func getCGImageOrientation(from uiImage: UIImage) -> CGImagePropertyOrientation 
     }
 }
 
-// func getRotationAngle() -> CGFloat {
-//    var rotationAngle: CGFloat = 0.0
-//
-//    switch UIDevice.current.orientation {
-//        case .portrait:
-//            rotationAngle = 0.0
-//        case .portraitUpsideDown:
-//            rotationAngle = CGFloat.pi
-//        case .landscapeLeft:
-//            rotationAngle = CGFloat.pi / 2
-//        case .landscapeRight:
-//            rotationAngle = -CGFloat.pi / 2
-//        default:
-//            rotationAngle = 0.0
-//    }
-//    return rotationAngle
-// }
-
-// func getAVCaptureOrientation(_ uiOrientation: UIDeviceOrientation) -> AVCaptureVideoOrientation {
-//    var imageOrientation: AVCaptureVideoOrientation = .portrait
-//    if uiOrientation == .portrait {
-//        imageOrientation = .up
-//        print("Device: Portrait")
-//    } else if uiOrientation == .landscapeLeft {
-//        imageOrientation = .left
-//        print("Device: LandscapeLeft")
-//    } else if uiOrientation == .landscapeRight {
-//        imageOrientation = .right
-//        CustomCamera.cameraPreviewLayer?.connection?.videoOrientation = .landscapeRight
-//        print("Device LandscapeRight")
-//    } else if uiOrientation == .portraitUpsideDown {
-//        imageOrientation = .down
-//        print("Device PortraitUpsideDown")
-//    } else {
-//        imageOrientation = .up
-//    }
-//    return imageOrientation
-// }
+func cgImagePropertyOrientation(from deviceOrientation: UIDeviceOrientation)
+    -> CGImagePropertyOrientation
+{
+    switch deviceOrientation {
+        case .portrait:
+            return .right
+        case .portraitUpsideDown:
+            return .left
+        case .landscapeLeft:
+            return .up
+        case .landscapeRight:
+            return .down
+        case .faceUp, .faceDown, .unknown:
+            return .up
+        @unknown default:
+            return .up
+    }
+}
