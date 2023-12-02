@@ -24,7 +24,7 @@ struct ContentView: View {
     @EnvironmentObject var appState: AppState
 
     @State private var navigateToSettings = false
-    @State private var recognizedWord: String?
+
 
     var body: some View {
         NavigationView {
@@ -47,6 +47,11 @@ struct ContentView: View {
                             .edgesIgnoringSafeArea(.all)
                         CrosshairView()
                             .edgesIgnoringSafeArea(.all)
+                        ModeChanger()
+                            .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/ .all/*@END_MENU_TOKEN@*/)
+                        if appState.mode == .video {
+                            BoundingBoxes()
+                        }
                     }
                     VStack {
                         Spacer()
@@ -62,6 +67,7 @@ struct ContentView: View {
                 .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/ .all/*@END_MENU_TOKEN@*/)
             }
         }
+       
     }
 }
 

@@ -12,9 +12,12 @@ struct CaptureButton: View {
     @EnvironmentObject var appState: AppState
     @State private var capturedWord: String?
     @State private var navigateToDefinition = false
+
     var body: some View {
+        let captureCallback = appState.mode == .photo ?cameraManager.captureWordInPhotoMode : cameraManager.captureWordInVideoMode
+
         Button(action: {
-            cameraManager.capturePhoto { word in
+            captureCallback { word in
                 print("Captured Word: \(word ?? "No word")")
                 guard let word = word else {
                     logger.error("No word captured")
@@ -32,6 +35,11 @@ struct CaptureButton: View {
                 .font(.title)
                 .cornerRadius(20)
         }.padding()
+            .onAppear {
+                print("Appearing")
+                self.capturedWord = nil
+                self.navigateToDefinition = false
+            }
         NavigationLink(destination: DefinitionView(word: capturedWord), isActive: self.$navigateToDefinition) {
             EmptyView()
         }

@@ -12,6 +12,8 @@
 		448D05092B152E6000CF5AF9 /* CrosshairView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 448D05082B152E6000CF5AF9 /* CrosshairView.swift */; };
 		448D050B2B152FB400CF5AF9 /* CaptureButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 448D050A2B152FB400CF5AF9 /* CaptureButton.swift */; };
 		448D050D2B15981300CF5AF9 /* ImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 448D050C2B15981300CF5AF9 /* ImageUtils.swift */; };
+		44B60FF52B1AF5C3002D4FA7 /* ModeChanger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44B60FF42B1AF5C3002D4FA7 /* ModeChanger.swift */; };
+		44B60FF72B1AFE9A002D4FA7 /* BoundingBoxes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44B60FF62B1AFE9A002D4FA7 /* BoundingBoxes.swift */; };
 		44B827F22B1030E60084CD09 /* WordDefinitionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44B827F12B1030E60084CD09 /* WordDefinitionView.swift */; };
 		44CFDDF22B0B20CE0002ECAB /* Main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CFDDF12B0B20CE0002ECAB /* Main.swift */; };
 		44CFDDF62B0B20CF0002ECAB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 44CFDDF52B0B20CF0002ECAB /* Assets.xcassets */; };
@@ -34,6 +36,8 @@
 		448D05082B152E6000CF5AF9 /* CrosshairView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrosshairView.swift; sourceTree = "<group>"; };
 		448D050A2B152FB400CF5AF9 /* CaptureButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureButton.swift; sourceTree = "<group>"; };
 		448D050C2B15981300CF5AF9 /* ImageUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUtils.swift; sourceTree = "<group>"; };
+		44B60FF42B1AF5C3002D4FA7 /* ModeChanger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModeChanger.swift; sourceTree = "<group>"; };
+		44B60FF62B1AFE9A002D4FA7 /* BoundingBoxes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoundingBoxes.swift; sourceTree = "<group>"; };
 		44B827F12B1030E60084CD09 /* WordDefinitionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordDefinitionView.swift; sourceTree = "<group>"; };
 		44CFDDEE2B0B20CE0002ECAB /* DefineLens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DefineLens.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		44CFDDF12B0B20CE0002ECAB /* Main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Main.swift; sourceTree = "<group>"; };
@@ -92,6 +96,7 @@
 				44CFDDF72B0B20CF0002ECAB /* DefineLens.entitlements */,
 				44CFDDF82B0B20CF0002ECAB /* Preview Content */,
 				44F0D80F2B12FA700052BC2C /* ContentView.swift */,
+				44B60FF42B1AF5C3002D4FA7 /* ModeChanger.swift */,
 			);
 			path = DefineLens;
 			sourceTree = "<group>";
@@ -113,6 +118,7 @@
 				44F0D80D2B12F9760052BC2C /* CameraManager.swift */,
 				448D05082B152E6000CF5AF9 /* CrosshairView.swift */,
 				448D050A2B152FB400CF5AF9 /* CaptureButton.swift */,
+				44B60FF62B1AFE9A002D4FA7 /* BoundingBoxes.swift */,
 			);
 			path = Camera;
 			sourceTree = "<group>";
@@ -229,6 +235,7 @@
 				44B827F22B1030E60084CD09 /* WordDefinitionView.swift in Sources */,
 				44E15A6C2B13E27E00759A2B /* GeometryUtils.swift in Sources */,
 				44F0D80E2B12F9760052BC2C /* CameraManager.swift in Sources */,
+				44B60FF52B1AF5C3002D4FA7 /* ModeChanger.swift in Sources */,
 				44CFDE032B0B2F490002ECAB /* DictionaryAPI.swift in Sources */,
 				44CFDE052B0B2FDA0002ECAB /* WordDefinitionCache.swift in Sources */,
 				44F0D8142B12FDFE0052BC2C /* BoundingBoxesView.swift in Sources */,
@@ -241,6 +248,7 @@
 				448D050D2B15981300CF5AF9 /* ImageUtils.swift in Sources */,
 				448D050B2B152FB400CF5AF9 /* CaptureButton.swift in Sources */,
 				44E15A6F2B14147900759A2B /* SettingsView.swift in Sources */,
+				44B60FF72B1AFE9A002D4FA7 /* BoundingBoxes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

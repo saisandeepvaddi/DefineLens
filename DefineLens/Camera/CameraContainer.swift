@@ -14,6 +14,7 @@ struct CameraContainer: View {
     var body: some View {
         CameraPreview(cameraManager: self.cameraManager)
             .onAppear {
+                print("Changing state")
                 self.cameraManager.appState = appState
             }
     }

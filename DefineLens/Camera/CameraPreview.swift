@@ -10,61 +10,71 @@ import SwiftUI
 import UIKit
 
 class CameraViewController: UIViewController {
-    var cameraManager: CameraManager
-    var previewLayer: AVCaptureVideoPreviewLayer?
-    init(cameraManager: CameraManager) {
-        self.cameraManager = cameraManager
-        super.init(nibName: nil, bundle: nil)
+  var cameraManager: CameraManager
+  //    var previewLayer: AVCaptureVideoPreviewLayer?
+
+  init(cameraManager: CameraManager) {
+    self.cameraManager = cameraManager
+    super.init(nibName: nil, bundle: nil)
+  }
+
+  @available(*, unavailable)
+  required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    addPreviewLayer()
+  }
+
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    DispatchQueue.global(qos: .userInitiated).async {
+      self.cameraManager.captureSession?.startRunning()
+      DispatchQueue.main.async {
+        self.cameraManager.previewLayer?.frame = self.view.bounds
+      }
+    }
+  }
+
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    cameraManager.stopCaptureSession()
+  }
+
+  func addPreviewLayer() {
+    guard let captureSession = cameraManager.captureSession else {
+      print("No capture session")
+      return
+    }
+    cameraManager.previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+    guard let previewLayer = cameraManager.previewLayer else {
+      print("Failed to create preview layer")
+      return
     }
 
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    previewLayer.videoGravity = .resizeAspectFill
+    previewLayer.frame = view.bounds
+    view.layer.addSublayer(previewLayer)
+  }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        guard let captureSession = cameraManager.captureSession else {
-            print("No capture session")
-            return
-        }
-        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        guard let previewLayer = previewLayer else {
-            print("Failed to create preview layer")
-            return
-        }
-
-        previewLayer.videoGravity = .resizeAspectFill
-        previewLayer.frame = view.bounds
-        view.layer.addSublayer(previewLayer)
+  func removePreviewlayer() {
+    if let previewLayer = cameraManager.previewLayer {
+      previewLayer.removeFromSuperlayer()
     }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.cameraManager.captureSession?.startRunning()
-            DispatchQueue.main.async {
-                self.previewLayer?.frame = self.view.bounds
-            }
-        }
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        cameraManager.stopCaptureSession()
-        cameraManager.removePreviewLayer()
-    }
+  }
 }
 
 struct CameraPreview: UIViewControllerRepresentable {
-    var cameraManager: CameraManager
-    func makeUIViewController(context: Context) -> some UIViewController {
-        let content = CameraViewController(
-            cameraManager: cameraManager
-        )
+  var cameraManager: CameraManager
+  func makeUIViewController(context: Context) -> some UIViewController {
+    let content = CameraViewController(
+      cameraManager: cameraManager
+    )
 
-        return content
-    }
+    return content
+  }
 
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
+  func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
 }

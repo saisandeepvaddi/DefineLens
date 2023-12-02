@@ -5,6 +5,7 @@
 //  Created by Sai Sandeep Vaddi on 11/25/23.
 //
 import AVFoundation
+import Combine
 import SwiftUI
 import UIKit
 import Vision
@@ -16,29 +17,67 @@ class CameraManager: NSObject, ObservableObject {
     private var videoOutput: AVCaptureVideoDataOutput?
     private var photoOutput: AVCapturePhotoOutput?
     var previewLayer: AVCaptureVideoPreviewLayer?
-    var appState: AppState?
+    var appState: AppState? {
+        didSet {
+            setupModeListener()
+        }
+    }
+
+    private var modeSubscription: AnyCancellable?
+
     @Published var textObservations: [VNRecognizedTextObservation] = []
     @Published var isReady: Bool = false
     @Published var wordUnderCrosshair: String?
     let sessionQueue = DispatchQueue(label: "videoQueue")
     var capturedWordCallback: ((String?) -> Void)?
-    private let frameProcessingInterval: TimeInterval = 1.0 / FRAMES_PER_SECOND
-    private var lastFrameProcessingTime: TimeInterval = 0
-
+    private var lastUpdateTime = Date()
     private let metadataOutput = AVCaptureMetadataOutput()
-    private let metadataObjectsQueue = DispatchQueue(label: "metadata objects queue", attributes: [], target: nil)
+    private let metadataObjectsQueue = DispatchQueue(
+        label: "metadata objects queue", attributes: [], target: nil)
+    private var currentMode: Modes = .photo
 
     init(appState: AppState? = nil) {
         self.appState = appState
         super.init()
+        print("initializing cameraManager")
         setupCaptureSession()
+    }
+
+    func setupModeListener() {
+        guard let appState = appState else {
+            print("AppState not available")
+            return
+        }
+
+        modeSubscription = appState.$mode.sink { newMode in
+            print("mode changed: \(newMode)")
+            if newMode != self.currentMode {
+                if newMode == .photo {
+                    self.switchToPhotoMode()
+                } else {
+                    self.switchToVideoMode()
+                }
+                self.currentMode = newMode
+            }
+        }
+    }
+
+    func shouldUpdateBoundingBoxes() -> Bool {
+        let currentTime = Date()
+        let updateInterval = 1.0 / 10
+        if currentTime.timeIntervalSince(lastUpdateTime) > updateInterval {
+            lastUpdateTime = currentTime
+            return true
+        }
+        return false
     }
 
     private func setupCaptureSession() {
         captureSession = AVCaptureSession()
         guard let captureSession = captureSession else { return }
         captureSession.beginConfiguration()
-        let deviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: .video, position: .back)
+        let deviceDiscoverySession = AVCaptureDevice.DiscoverySession(
+            deviceTypes: [.builtInWideAngleCamera], mediaType: .video, position: .back)
         let videoDevice = deviceDiscoverySession.devices.first ?? AVCaptureDevice.default(for: .video)
         guard let videoDevice = videoDevice else {
             logger.error("Device input not available..")
@@ -51,14 +90,6 @@ class CameraManager: NSObject, ObservableObject {
             captureSession.addInput(videoInput)
         }
 
-        videoOutput = AVCaptureVideoDataOutput()
-        guard let videoOutput = videoOutput else { return }
-
-        if captureSession.canAddOutput(videoOutput) {
-            captureSession.addOutput(videoOutput)
-            videoOutput.setSampleBufferDelegate(self, queue: sessionQueue)
-        }
-
         photoOutput = AVCapturePhotoOutput()
 
         guard let photoOutput = photoOutput else { return }
@@ -67,16 +98,81 @@ class CameraManager: NSObject, ObservableObject {
             captureSession.addOutput(photoOutput)
         }
 
+        if currentMode == .video {
+            videoOutput = AVCaptureVideoDataOutput()
+            guard let videoOutput = videoOutput else { return }
+
+            if captureSession.canAddOutput(videoOutput) {
+                captureSession.addOutput(videoOutput)
+                videoOutput.setSampleBufferDelegate(self, queue: sessionQueue)
+            }
+        }
+
         captureSession.sessionPreset = .photo
 
         captureSession.commitConfiguration()
     }
 
-    func capturePhoto(callback: @escaping ((String?) -> Void)) {
-        guard let photoOutput = photoOutput else { return }
-        if capturedWordCallback == nil {
-            capturedWordCallback = callback
+    func switchToPhotoMode() {
+        sessionQueue.async { [weak self] in
+            guard let self = self, let captureSession = self.captureSession else { return }
+
+            captureSession.beginConfiguration()
+
+            if let videoOutput = self.videoOutput {
+                captureSession.removeOutput(videoOutput)
+            }
+
+            if photoOutput == nil {
+                photoOutput = AVCapturePhotoOutput()
+            }
+
+            guard let photoOutput = photoOutput else { return }
+
+            if captureSession.canAddOutput(photoOutput) {
+                captureSession.addOutput(photoOutput)
+            }
+
+            captureSession.commitConfiguration()
+            print("Switched to Photo")
         }
+    }
+
+    func switchToVideoMode() {
+        sessionQueue.async { [weak self] in
+            guard let self = self, let captureSession = self.captureSession else { return }
+
+            captureSession.beginConfiguration()
+
+            if let photoOutput = self.photoOutput {
+                captureSession.removeOutput(photoOutput)
+            }
+
+            if videoOutput == nil {
+                videoOutput = AVCaptureVideoDataOutput()
+            }
+
+            guard let videoOutput = videoOutput else {
+                return
+            }
+
+            if captureSession.canAddOutput(videoOutput) {
+                captureSession.addOutput(videoOutput)
+                videoOutput.setSampleBufferDelegate(self, queue: self.sessionQueue)
+            }
+
+            captureSession.commitConfiguration()
+            print("Switched to video")
+        }
+    }
+
+    func captureWordInPhotoMode(callback: @escaping ((String?) -> Void)) {
+        print("Capturing in photo mode")
+        guard let photoOutput = photoOutput else { return }
+        capturedWordCallback = callback
+//        if capturedWordCallback == nil {
+//            capturedWordCallback = callback
+//        }
         let photoSettings = AVCapturePhotoSettings()
         if let photoOutputConnection = photoOutput.connection(with: .video) {
             photoOutputConnection.videoOrientation = .portrait
@@ -84,17 +180,12 @@ class CameraManager: NSObject, ObservableObject {
         photoOutput.capturePhoto(with: photoSettings, delegate: self)
     }
 
-    func addPreviewLayer(to view: UIView) {
-        guard let captureSession = captureSession, previewLayer == nil else { return }
-        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewLayer?.frame = view.bounds
-        previewLayer?.videoGravity = .resizeAspectFill
-        view.layer.addSublayer(previewLayer!)
-    }
+    func captureWordInVideoMode(callback: @escaping ((String?) -> Void)) {
+        print("Capturing in video mode")
+        guard videoOutput != nil else { return }
 
-    func removePreviewLayer() {
-        previewLayer?.removeFromSuperlayer()
-        previewLayer = nil
+        // Since video buffer is continuously running, just setting the callback will trigger the word
+        capturedWordCallback = callback
     }
 
     func startCaptureSession() {
@@ -108,21 +199,10 @@ class CameraManager: NSObject, ObservableObject {
     }
 }
 
-func cgImagePropertyOrientationToUIImageOrientation(_ value: CGImagePropertyOrientation) -> UIImage.Orientation {
-    switch value {
-    case .up: return .up
-    case .upMirrored: return .upMirrored
-    case .down: return .down
-    case .downMirrored: return .downMirrored
-    case .left: return .left
-    case .leftMirrored: return .leftMirrored
-    case .right: return .right
-    case .rightMirrored: return .rightMirrored
-    }
-}
-
 extension CameraManager: AVCapturePhotoCaptureDelegate {
-    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+    func photoOutput(
+        _ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?)
+    {
         guard let cgImage = photo.cgImageRepresentation() else {
             print("No CGImage")
             return
@@ -130,7 +210,9 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
 
         let cgOrientation = photo.metadata[String(kCGImagePropertyOrientation)] as? UInt32
 
-        guard let cgOrientation = cgOrientation, let cgOrientation = CGImagePropertyOrientation(rawValue: cgOrientation) else {
+        guard let cgOrientation = cgOrientation,
+              let cgOrientation = CGImagePropertyOrientation(rawValue: cgOrientation)
+        else {
             print("No orientation")
             return
         }
@@ -139,7 +221,6 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
 
         let image = UIImage(cgImage: cgImage, scale: 1.0, orientation: uiOrientation)
 
-//        saveImageToPhotos(image)
         processFrameImage(image)
     }
 
@@ -156,7 +237,7 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
             let imageSize = CGSize(width: cgImage.width, height: cgImage.height)
             let imageBounds = CGRect(origin: .zero, size: imageSize)
 
-            drawAnnotations(image: uiImage, observations: observations)
+            //            drawAnnotations(image: uiImage, observations: observations)
 
             self?.updateObservationsForBuffer(observations, imageBounds: imageBounds)
         }
@@ -164,32 +245,54 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
         request.recognitionLevel = .accurate
         request.usesLanguageCorrection = false
 
-        let imageRequestHandler = VNImageRequestHandler(cgImage: cgImage, orientation: getCGImageOrientation(from: uiImage), options: [:])
+        let imageRequestHandler = VNImageRequestHandler(
+            cgImage: cgImage, orientation: getCGImageOrientation(from: uiImage), options: [:])
         try? imageRequestHandler.perform([request])
     }
 }
 
 extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
+    func captureOutput(
+        _ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer,
+        from connection: AVCaptureConnection)
+    {
+        if currentMode == .photo {
+            //            We don't process frames if it's photo mode
+            return
+        }
+        if !shouldUpdateBoundingBoxes() {
+            return
+        }
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        processFrameBuffer(pixelBuffer)
+    }
+
     func processFrameBuffer(_ pixelBuffer: CVPixelBuffer) {
         let request = VNRecognizeTextRequest { [weak self] request, _ in
             guard let observations = request.results as? [VNRecognizedTextObservation] else { return }
-            let imageWidth = CVPixelBufferGetWidth(pixelBuffer)
-            let imageHeight = CVPixelBufferGetHeight(pixelBuffer)
 
-            let imageBounds = CGRect(origin: .zero, size: CGSize(width: imageWidth, height: imageHeight))
-
-            self?.updateObservationsForBuffer(observations, imageBounds: imageBounds)
+            guard let previewLayer = self?.previewLayer else {
+                print("No preview layer")
+                return
+            }
+            let bounds = previewLayer.bounds
+            self?.updateObservationsForBuffer(observations, imageBounds: bounds)
         }
         request.recognitionLevel = .accurate
         request.usesLanguageCorrection = false
 
-        let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: .right, options: [:])
+        let imageRequestHandler = VNImageRequestHandler(
+            cvPixelBuffer: pixelBuffer,
+            orientation: cgImagePropertyOrientation(from: UIDevice.current.orientation))
 
         try? imageRequestHandler.perform([request])
     }
 
-    func updateObservationsForBuffer(_ observations: [VNRecognizedTextObservation], imageBounds: CGRect) {
+    func updateObservationsForBuffer(
+        _ observations: [VNRecognizedTextObservation], imageBounds: CGRect)
+    {
         let crosshairPosition = CGPoint(x: imageBounds.midX, y: imageBounds.midY)
+        var boxes = [CGRect]()
         for observation in observations {
             let boundingBox = observation.boundingBox
             let transformedBox = transformBoundingBox(boundingBox, for: imageBounds)
@@ -210,12 +313,19 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
                             let wordBoundingBoxTransformed = transformBoundingBox(
                                 wordBoundingBox, for: imageBounds)
 
+                            if currentMode == .video {
+                                boxes.append(wordBoundingBoxTransformed)
+                            }
+
                             if wordBoundingBoxTransformed.contains(crosshairPosition) {
                                 DispatchQueue.main.async {
                                     self.textObservations = [observation]
                                     self.wordUnderCrosshair = word
                                     if let callback = self.capturedWordCallback {
                                         callback(word)
+                                        // Prevent setting word multiple times in video mode while it redirects
+                                        // until next button click
+                                        self.capturedWordCallback = nil
                                     }
                                 }
                             }
@@ -225,14 +335,12 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
                     }
                 }
             }
-        }
-    }
-}
 
-extension CGRect {
-    func expandBy(widthFactor: CGFloat, heightFactor: CGFloat) -> CGRect {
-        let widthExpansion = width * widthFactor
-        let heightExpansion = height * heightFactor
-        return insetBy(dx: -widthExpansion, dy: -heightExpansion)
+            if currentMode == .video {
+                DispatchQueue.main.async {
+                    self.appState?.boundingBoxes = boxes
+                }
+            }
+        }
     }
 }
