@@ -11,7 +11,7 @@ import UIKit
 
 class CameraViewController: UIViewController {
     var cameraManager: CameraManager
-    var previewLayer: AVCaptureVideoPreviewLayer?
+//    var previewLayer: AVCaptureVideoPreviewLayer?
 
     init(cameraManager: CameraManager) {
         self.cameraManager = cameraManager
@@ -33,7 +33,7 @@ class CameraViewController: UIViewController {
         DispatchQueue.global(qos: .userInitiated).async {
             self.cameraManager.captureSession?.startRunning()
             DispatchQueue.main.async {
-                self.previewLayer?.frame = self.view.bounds
+                self.cameraManager.previewLayer?.frame = self.view.bounds
             }
         }
     }
@@ -48,8 +48,8 @@ class CameraViewController: UIViewController {
             print("No capture session")
             return
         }
-        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        guard let previewLayer = previewLayer else {
+        cameraManager.previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        guard let previewLayer = cameraManager.previewLayer else {
             print("Failed to create preview layer")
             return
         }
@@ -60,7 +60,7 @@ class CameraViewController: UIViewController {
     }
 
     func removePreviewlayer() {
-        if let previewLayer = previewLayer {
+        if let previewLayer = cameraManager.previewLayer {
             previewLayer.removeFromSuperlayer()
         }
     }

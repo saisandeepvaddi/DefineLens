@@ -13,8 +13,8 @@ struct CameraContainer: View {
 
     var body: some View {
         CameraPreview(cameraManager: self.cameraManager)
-            .onAppear {
-                self.cameraManager.appState = appState
-            }
+//            .onAppear {
+//                self.cameraManager.appState = appState
+//            }
     }
 }

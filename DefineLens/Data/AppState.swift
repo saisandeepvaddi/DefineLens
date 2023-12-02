@@ -12,7 +12,14 @@ struct CustomRecognizedText {
     var boundingBox: CGRect
 }
 
+enum Modes: String, CaseIterable {
+    case photo = "Photo"
+    case video = "Video"
+}
+
 class AppState: ObservableObject {
     @Published var recognizedTexts: [CustomRecognizedText]?
     @Published var capturedWord: String?
+    @Published var mode: Modes = .photo
+    @Published var boundingBoxes: [CGRect] = []
 }

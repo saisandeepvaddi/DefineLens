@@ -47,6 +47,11 @@ struct ContentView: View {
                             .edgesIgnoringSafeArea(.all)
                         CrosshairView()
                             .edgesIgnoringSafeArea(.all)
+                        ModeChanger()
+                            .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/ .all/*@END_MENU_TOKEN@*/)
+                        if appState.mode == .video {
+                            BoundingBoxes()
+                        }
                     }
                     VStack {
                         Spacer()
