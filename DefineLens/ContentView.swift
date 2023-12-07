@@ -25,7 +25,6 @@ struct ContentView: View {
 
     @State private var navigateToSettings = false
 
-
     var body: some View {
         NavigationView {
             GeometryReader { geo in
@@ -45,8 +44,10 @@ struct ContentView: View {
                     ZStack {
                         CameraContainer()
                             .edgesIgnoringSafeArea(.all)
-                        CrosshairView()
-                            .edgesIgnoringSafeArea(.all)
+                        if appState.mode == .single {
+                            CrosshairView()
+                                .edgesIgnoringSafeArea(.all)
+                        }
                         ModeChanger()
                             .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/ .all/*@END_MENU_TOKEN@*/)
                         if appState.mode == .multi {
@@ -67,7 +68,6 @@ struct ContentView: View {
                 .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/ .all/*@END_MENU_TOKEN@*/)
             }
         }
-       
     }
 }
 
