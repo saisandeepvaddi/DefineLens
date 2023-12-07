@@ -13,6 +13,7 @@
 		448D050B2B152FB400CF5AF9 /* CaptureButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 448D050A2B152FB400CF5AF9 /* CaptureButton.swift */; };
 		448D050D2B15981300CF5AF9 /* ImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 448D050C2B15981300CF5AF9 /* ImageUtils.swift */; };
 		449F58FC2B21996A003EB16B /* WordList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449F58FB2B21996A003EB16B /* WordList.swift */; };
+		449F58FE2B219DC6003EB16B /* TextUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449F58FD2B219DC6003EB16B /* TextUtils.swift */; };
 		44B60FF52B1AF5C3002D4FA7 /* ModeChanger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44B60FF42B1AF5C3002D4FA7 /* ModeChanger.swift */; };
 		44B60FF72B1AFE9A002D4FA7 /* BoundingBoxes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44B60FF62B1AFE9A002D4FA7 /* BoundingBoxes.swift */; };
 		44B827F22B1030E60084CD09 /* WordDefinitionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44B827F12B1030E60084CD09 /* WordDefinitionView.swift */; };
@@ -38,6 +39,7 @@
 		448D050A2B152FB400CF5AF9 /* CaptureButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureButton.swift; sourceTree = "<group>"; };
 		448D050C2B15981300CF5AF9 /* ImageUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUtils.swift; sourceTree = "<group>"; };
 		449F58FB2B21996A003EB16B /* WordList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordList.swift; sourceTree = "<group>"; };
+		449F58FD2B219DC6003EB16B /* TextUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextUtils.swift; sourceTree = "<group>"; };
 		44B60FF42B1AF5C3002D4FA7 /* ModeChanger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModeChanger.swift; sourceTree = "<group>"; };
 		44B60FF62B1AFE9A002D4FA7 /* BoundingBoxes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoundingBoxes.swift; sourceTree = "<group>"; };
 		44B827F12B1030E60084CD09 /* WordDefinitionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordDefinitionView.swift; sourceTree = "<group>"; };
@@ -151,6 +153,7 @@
 			children = (
 				44E15A6B2B13E27E00759A2B /* GeometryUtils.swift */,
 				448D050C2B15981300CF5AF9 /* ImageUtils.swift */,
+				449F58FD2B219DC6003EB16B /* TextUtils.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -253,6 +256,7 @@
 				448D050B2B152FB400CF5AF9 /* CaptureButton.swift in Sources */,
 				44E15A6F2B14147900759A2B /* SettingsView.swift in Sources */,
 				44B60FF72B1AFE9A002D4FA7 /* BoundingBoxes.swift in Sources */,
+				449F58FE2B219DC6003EB16B /* TextUtils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

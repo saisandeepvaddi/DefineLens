@@ -10,10 +10,12 @@ import SwiftUI
 struct WordList: View {
     @State var wordList: [CustomRecognizedText] = []
     var body: some View {
+        let wordTexts = wordList.map { $0.text }
+        let uniqueWords = sortCleanUniqueWords(words: wordTexts)
         List {
-            ForEach(wordList, id: \.self.text) { w in
-                NavigationLink(destination: DefinitionView(word: w.text)) {
-                    Text(w.text)
+            ForEach(uniqueWords, id: \.self) { word in
+                NavigationLink(destination: DefinitionView(word: word)) {
+                    Text(word)
                 }
             }
         }
