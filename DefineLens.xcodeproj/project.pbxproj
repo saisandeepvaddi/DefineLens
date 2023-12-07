@@ -12,6 +12,7 @@
 		448D05092B152E6000CF5AF9 /* CrosshairView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 448D05082B152E6000CF5AF9 /* CrosshairView.swift */; };
 		448D050B2B152FB400CF5AF9 /* CaptureButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 448D050A2B152FB400CF5AF9 /* CaptureButton.swift */; };
 		448D050D2B15981300CF5AF9 /* ImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 448D050C2B15981300CF5AF9 /* ImageUtils.swift */; };
+		449F58FC2B21996A003EB16B /* WordList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 449F58FB2B21996A003EB16B /* WordList.swift */; };
 		44B60FF52B1AF5C3002D4FA7 /* ModeChanger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44B60FF42B1AF5C3002D4FA7 /* ModeChanger.swift */; };
 		44B60FF72B1AFE9A002D4FA7 /* BoundingBoxes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44B60FF62B1AFE9A002D4FA7 /* BoundingBoxes.swift */; };
 		44B827F22B1030E60084CD09 /* WordDefinitionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44B827F12B1030E60084CD09 /* WordDefinitionView.swift */; };
@@ -36,6 +37,7 @@
 		448D05082B152E6000CF5AF9 /* CrosshairView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrosshairView.swift; sourceTree = "<group>"; };
 		448D050A2B152FB400CF5AF9 /* CaptureButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureButton.swift; sourceTree = "<group>"; };
 		448D050C2B15981300CF5AF9 /* ImageUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUtils.swift; sourceTree = "<group>"; };
+		449F58FB2B21996A003EB16B /* WordList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordList.swift; sourceTree = "<group>"; };
 		44B60FF42B1AF5C3002D4FA7 /* ModeChanger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModeChanger.swift; sourceTree = "<group>"; };
 		44B60FF62B1AFE9A002D4FA7 /* BoundingBoxes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoundingBoxes.swift; sourceTree = "<group>"; };
 		44B827F12B1030E60084CD09 /* WordDefinitionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordDefinitionView.swift; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 				44CFDE042B0B2FDA0002ECAB /* WordDefinitionCache.swift */,
 				44B827F12B1030E60084CD09 /* WordDefinitionView.swift */,
 				442907F12B0ECE0E0023D2C6 /* DefinitionView.swift */,
+				449F58FB2B21996A003EB16B /* WordList.swift */,
 			);
 			path = Dictionary;
 			sourceTree = "<group>";
@@ -239,6 +242,7 @@
 				44CFDE032B0B2F490002ECAB /* DictionaryAPI.swift in Sources */,
 				44CFDE052B0B2FDA0002ECAB /* WordDefinitionCache.swift in Sources */,
 				44F0D8142B12FDFE0052BC2C /* BoundingBoxesView.swift in Sources */,
+				449F58FC2B21996A003EB16B /* WordList.swift in Sources */,
 				448D05092B152E6000CF5AF9 /* CrosshairView.swift in Sources */,
 				4442BB612B0C8151007FCB91 /* DictionaryResponse.swift in Sources */,
 				44F0D8122B12FAB70052BC2C /* CameraPreview.swift in Sources */,

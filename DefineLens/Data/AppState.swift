@@ -13,13 +13,12 @@ struct CustomRecognizedText {
 }
 
 enum Modes: String, CaseIterable {
-    case photo = "Photo"
-    case video = "Video"
+    case single = "Single"
+    case multi = "Multi"
 }
 
 class AppState: ObservableObject {
-    @Published var recognizedTexts: [CustomRecognizedText]?
+    @Published var words: [CustomRecognizedText]?
     @Published var capturedWord: String?
-    @Published var mode: Modes = .photo
-    @Published var boundingBoxes: [CGRect] = []
+    @Published var mode: Modes = .single
 }

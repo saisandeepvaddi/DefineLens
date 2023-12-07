@@ -10,20 +10,27 @@ import SwiftUI
 struct CaptureButton: View {
     @EnvironmentObject var cameraManager: CameraManager
     @EnvironmentObject var appState: AppState
-    @State private var capturedWord: String?
+    @State private var capturedWords: [CustomRecognizedText] = []
     @State private var navigateToDefinition = false
 
     var body: some View {
-        let captureCallback = appState.mode == .photo ?cameraManager.captureWordInPhotoMode : cameraManager.captureWordInVideoMode
+//        let captureCallback = appState.mode == .single ?cameraManager.captureWordInPhotoMode : cameraManager.captureWordInVideoMode
 
         Button(action: {
-            captureCallback { word in
-                print("Captured Word: \(word ?? "No word")")
-                guard let word = word else {
+            cameraManager.captureWordInVideoMode { words in
+
+//                print("Captured Word: \(word ?? "No word")")
+                guard let words = words else {
                     logger.error("No word captured")
                     return
                 }
-                self.capturedWord = word
+
+                guard let word = words.first else {
+                    print("no words")
+                    return
+                }
+
+                self.capturedWords = words
                 self.navigateToDefinition = true
             }
         }) {
@@ -37,10 +44,15 @@ struct CaptureButton: View {
         }.padding()
             .onAppear {
                 print("Appearing")
-                self.capturedWord = nil
+                self.capturedWords = []
                 self.navigateToDefinition = false
             }
-        NavigationLink(destination: DefinitionView(word: capturedWord), isActive: self.$navigateToDefinition) {
+
+        let firstWord = capturedWords.first?.text ?? ""
+
+        let destination = appState.mode == .single ? AnyView(DefinitionView(word: firstWord)) : AnyView(WordList(wordList: capturedWords))
+
+        NavigationLink(destination: destination, isActive: self.$navigateToDefinition) {
             EmptyView()
         }
     }

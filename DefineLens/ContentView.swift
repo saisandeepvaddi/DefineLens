@@ -49,7 +49,7 @@ struct ContentView: View {
                             .edgesIgnoringSafeArea(.all)
                         ModeChanger()
                             .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/ .all/*@END_MENU_TOKEN@*/)
-                        if appState.mode == .video {
+                        if appState.mode == .multi {
                             BoundingBoxes()
                         }
                     }
