@@ -52,11 +52,6 @@ class CameraManager: NSObject, ObservableObject {
         modeSubscription = appState.$mode.sink { newMode in
             print("mode changed: \(newMode)")
             if newMode != self.currentMode {
-//                if newMode == .single {
-//                    self.switchToPhotoMode()
-//                } else {
-//                    self.switchToVideoMode()
-//                }
                 self.currentMode = newMode
             }
         }
@@ -90,14 +85,6 @@ class CameraManager: NSObject, ObservableObject {
             captureSession.addInput(videoInput)
         }
 
-//        photoOutput = AVCapturePhotoOutput()
-//
-//        guard let photoOutput = photoOutput else { return }
-//
-//        if captureSession.canAddOutput(photoOutput) {
-//            captureSession.addOutput(photoOutput)
-//        }
-
         videoOutput = AVCaptureVideoDataOutput()
         guard let videoOutput = videoOutput else { return }
 
@@ -105,16 +92,6 @@ class CameraManager: NSObject, ObservableObject {
             captureSession.addOutput(videoOutput)
             videoOutput.setSampleBufferDelegate(self, queue: sessionQueue)
         }
-
-//        if currentMode == .video {
-//            videoOutput = AVCaptureVideoDataOutput()
-//            guard let videoOutput = videoOutput else { return }
-//
-//            if captureSession.canAddOutput(videoOutput) {
-//                captureSession.addOutput(videoOutput)
-//                videoOutput.setSampleBufferDelegate(self, queue: sessionQueue)
-//            }
-//        }
 
         captureSession.sessionPreset = .photo
 
@@ -174,20 +151,6 @@ class CameraManager: NSObject, ObservableObject {
         }
     }
 
-    func captureWordInPhotoMode(callback: @escaping (([CustomRecognizedText]?) -> Void)) {
-        print("Capturing in photo mode")
-        guard let photoOutput = photoOutput else { return }
-        capturedWordCallback = callback
-//        if capturedWordCallback == nil {
-//            capturedWordCallback = callback
-//        }
-        let photoSettings = AVCapturePhotoSettings()
-        if let photoOutputConnection = photoOutput.connection(with: .video) {
-            photoOutputConnection.videoOrientation = .portrait
-        }
-        photoOutput.capturePhoto(with: photoSettings, delegate: self)
-    }
-
     func captureWordInVideoMode(callback: @escaping (([CustomRecognizedText]?) -> Void)) {
         print("Capturing in video mode")
         guard videoOutput != nil else { return }
@@ -207,70 +170,11 @@ class CameraManager: NSObject, ObservableObject {
     }
 }
 
-extension CameraManager: AVCapturePhotoCaptureDelegate {
-    func photoOutput(
-        _ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?)
-    {
-        guard let cgImage = photo.cgImageRepresentation() else {
-            print("No CGImage")
-            return
-        }
-
-        let cgOrientation = photo.metadata[String(kCGImagePropertyOrientation)] as? UInt32
-
-        guard let cgOrientation = cgOrientation,
-              let cgOrientation = CGImagePropertyOrientation(rawValue: cgOrientation)
-        else {
-            print("No orientation")
-            return
-        }
-
-        let uiOrientation = cgImagePropertyOrientationToUIImageOrientation(cgOrientation)
-
-        let image = UIImage(cgImage: cgImage, scale: 1.0, orientation: uiOrientation)
-
-        processFrameImage(image)
-    }
-
-    func processFrameImage(_ uiImage: UIImage) {
-        guard let cgImage = uiImage.cgImage else {
-            return
-        }
-
-        let request = VNRecognizeTextRequest { [weak self] request, _ in
-            guard let observations = request.results as? [VNRecognizedTextObservation] else {
-                return
-            }
-
-            let imageSize = CGSize(width: cgImage.width, height: cgImage.height)
-            let imageBounds = CGRect(origin: .zero, size: imageSize)
-
-            //            drawAnnotations(image: uiImage, observations: observations)
-
-            self?.updateObservationsForBuffer(observations, imageBounds: imageBounds)
-        }
-
-        request.recognitionLevel = .accurate
-        request.usesLanguageCorrection = false
-
-        let imageRequestHandler = VNImageRequestHandler(
-            cgImage: cgImage, orientation: getCGImageOrientation(from: uiImage), options: [:])
-        try? imageRequestHandler.perform([request])
-    }
-}
-
 extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(
         _ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer,
         from connection: AVCaptureConnection)
     {
-//        if currentMode == .single {
-//            //            We don't process frames if it's photo mode
-//            return
-//        }
-//        if !shouldUpdateBoundingBoxes() {
-//            return
-//        }
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         if capturedWordCallback != nil {
             processFrameBuffer(pixelBuffer)
@@ -291,7 +195,6 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
             } else {
                 self?.processObservationsInMultiMode(observations, imageBounds: bounds)
             }
-//            self?.updateObservationsForBuffer(observations, imageBounds: bounds)
         }
         request.recognitionLevel = .accurate
         request.usesLanguageCorrection = false
@@ -378,54 +281,6 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
             if let callback = self.capturedWordCallback {
                 callback(detectedWords)
                 self.capturedWordCallback = nil
-            }
-        }
-    }
-
-    func updateObservationsForBuffer(
-        _ observations: [VNRecognizedTextObservation], imageBounds: CGRect)
-    {
-        let crosshairPosition = CGPoint(x: imageBounds.midX, y: imageBounds.midY)
-        var detectedWords = [CustomRecognizedText]()
-
-        for observation in observations {
-            let boundingBox = observation.boundingBox
-            let transformedBox = transformBoundingBox(boundingBox, for: imageBounds)
-
-            if transformedBox.contains(crosshairPosition) {
-                guard let candidate = observation.topCandidates(1).first else { continue }
-                let fullString = candidate.string
-                let words = fullString.split(separator: " ").map(String.init)
-                for word in words {
-                    if let wordRange = fullString.range(of: word) {
-                        do {
-                            let boxObservation = try candidate.boundingBox(for: wordRange)
-                            guard let boxObservation = boxObservation else {
-                                continue
-                            }
-
-                            let wordBoundingBox = boxObservation.boundingBox
-                            let wordBoundingBoxTransformed = transformBoundingBox(
-                                wordBoundingBox, for: imageBounds)
-
-                            if currentMode == .multi {
-                                let newWord = CustomRecognizedText(
-                                    text: word, boundingBox: wordBoundingBoxTransformed)
-//                                boxes.append(wordBoundingBoxTransformed)
-                                detectedWords.append(newWord)
-                                continue
-                            }
-
-                            if wordBoundingBoxTransformed.contains(crosshairPosition) {
-                                DispatchQueue.main.async {
-                                    let newWord = CustomRecognizedText(text: word, boundingBox: wordBoundingBoxTransformed)
-                                }
-                            }
-                        } catch {
-                            print("Error in wordRange")
-                        }
-                    }
-                }
             }
         }
     }
