@@ -36,10 +36,14 @@ class CameraManager: NSObject, ObservableObject {
         label: "metadata objects queue", attributes: [], target: nil)
     private var currentMode: Modes = .single
 
+    private var videoDevice: AVCaptureDevice?
+
     init(appState: AppState? = nil) {
         self.appState = appState
         super.init()
         print("initializing cameraManager")
+        setupCameraDevice()
+//        setupCameraFocus()
         setupCaptureSession()
     }
 
@@ -67,23 +71,76 @@ class CameraManager: NSObject, ObservableObject {
         return false
     }
 
-    private func setupCaptureSession() {
-        captureSession = AVCaptureSession()
-        guard let captureSession = captureSession else { return }
-        captureSession.beginConfiguration()
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == "focusMode" {
+            if let newValue = change?[.newKey] {
+                print("Focus mode changed to: \(newValue)")
+            }
+        } else if keyPath == "lensPosition" {
+            if let newValue = change?[.newKey] {
+                print("Lens position changed to: \(newValue)")
+            }
+        }
+    }
+
+    private func setupCameraDevice() {
         let deviceDiscoverySession = AVCaptureDevice.DiscoverySession(
-            deviceTypes: [.builtInWideAngleCamera], mediaType: .video, position: .back)
-        let videoDevice = deviceDiscoverySession.devices.first ?? AVCaptureDevice.default(for: .video)
+            deviceTypes: [.builtInTripleCamera, .builtInDualCamera], mediaType: .video, position: .back)
+        videoDevice = deviceDiscoverySession.devices.first ?? AVCaptureDevice.default(for: .video)
+    }
+
+    private func setupCameraFocus() {
         guard let videoDevice = videoDevice else {
             logger.error("Device input not available..")
             return
         }
+
+        do {
+            try videoDevice.lockForConfiguration()
+
+            videoDevice.isSubjectAreaChangeMonitoringEnabled = true
+            if videoDevice.isFocusModeSupported(.continuousAutoFocus) {
+                print("Setting focus")
+                videoDevice.focusPointOfInterest = CGPoint(x: 0.5, y: 0.5)
+                videoDevice.focusMode = .continuousAutoFocus
+            }
+
+            videoDevice.exposureMode = .continuousAutoExposure
+
+            if videoDevice.isSmoothAutoFocusSupported {
+                videoDevice.isSmoothAutoFocusEnabled = true
+            }
+
+            // TODO: Add a slider
+            if videoDevice.deviceType != AVCaptureDevice.DeviceType.builtInWideAngleCamera {
+                videoDevice.videoZoomFactor = 2.0
+            }
+
+            videoDevice.unlockForConfiguration()
+
+        } catch {
+            print("Unable to add focus config")
+        }
+    }
+
+    private func setupCaptureSession() {
+        guard let videoDevice = videoDevice else {
+            logger.error("Device input not available..")
+            return
+        }
+
+        captureSession = AVCaptureSession()
+        guard let captureSession = captureSession else { return }
+        captureSession.beginConfiguration()
+        captureSession.sessionPreset = .photo
 
         guard let videoInput = try? AVCaptureDeviceInput(device: videoDevice) else { return }
 
         if captureSession.canAddInput(videoInput) {
             captureSession.addInput(videoInput)
         }
+
+        setupCameraFocus()
 
         videoOutput = AVCaptureVideoDataOutput()
         guard let videoOutput = videoOutput else { return }
@@ -92,8 +149,6 @@ class CameraManager: NSObject, ObservableObject {
             captureSession.addOutput(videoOutput)
             videoOutput.setSampleBufferDelegate(self, queue: sessionQueue)
         }
-
-        captureSession.sessionPreset = .photo
 
         captureSession.commitConfiguration()
     }
