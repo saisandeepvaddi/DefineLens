@@ -17,6 +17,7 @@ class CameraManager: NSObject, ObservableObject {
     private var videoOutput: AVCaptureVideoDataOutput?
     private var photoOutput: AVCapturePhotoOutput?
     var previewLayer: AVCaptureVideoPreviewLayer?
+
     var appState: AppState? {
         didSet {
             setupModeListener()
@@ -43,8 +44,9 @@ class CameraManager: NSObject, ObservableObject {
         super.init()
         print("initializing cameraManager")
         setupCameraDevice()
-//        setupCameraFocus()
-        setupCaptureSession()
+//        sessionQueue.async {
+//            self.setupCaptureSession()
+//        }
     }
 
     func setupModeListener() {
@@ -89,6 +91,35 @@ class CameraManager: NSObject, ObservableObject {
         videoDevice = deviceDiscoverySession.devices.first ?? AVCaptureDevice.default(for: .video)
     }
 
+    func checkCameraPermissions(completion: @escaping (Bool) -> Void) {
+        let authorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
+        switch authorizationStatus {
+        case .authorized:
+            print("Permissions authorized before")
+            completion(true)
+            return
+        case .denied:
+            print("Permissions denied")
+            completion(false)
+            return
+        case .restricted:
+            print("App not permitted to use the camera")
+            completion(false)
+            return
+        case .notDetermined:
+            print("not determined")
+            AVCaptureDevice.requestAccess(for: .video) { granted in
+                print("granted form request: \(granted)")
+                completion(granted)
+            }
+            return
+        @unknown default:
+            print("Unknown permissions")
+            completion(false)
+            return
+        }
+    }
+
     private func setupCameraFocus() {
         guard let videoDevice = videoDevice else {
             logger.error("Device input not available..")
@@ -123,7 +154,7 @@ class CameraManager: NSObject, ObservableObject {
         }
     }
 
-    private func setupCaptureSession() {
+   func setupCaptureSession() {
         guard let videoDevice = videoDevice else {
             logger.error("Device input not available..")
             return
