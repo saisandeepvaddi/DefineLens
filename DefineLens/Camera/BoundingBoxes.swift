@@ -8,16 +8,16 @@
 import SwiftUI
 
 struct BoundingBoxes: View {
-    @EnvironmentObject var appState: AppState
+    @State var boxes: [CustomRecognizedText] = []
     var body: some View {
         ZStack {
-//            ForEach(0 ..< appState.words ?? [].count, id: \.self) { index in
-//                Path { path in
-//                    let box = appState.boundingBoxes[index]
-//                    path.addRect(box)
-//                }
-//                .stroke(Color.red, lineWidth: 2)
-//            }
+            ForEach(0 ..< boxes.count, id: \.self) { index in
+                Path { path in
+                    let box = boxes[index].boundingBox
+                    path.addRect(box)
+                }
+                .stroke(Color.red, lineWidth: 2)
+            }
         }
     }
 }

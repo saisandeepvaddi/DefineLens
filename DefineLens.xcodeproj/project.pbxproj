@@ -26,10 +26,10 @@
 		44E15A6F2B14147900759A2B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44E15A6E2B14147900759A2B /* SettingsView.swift */; };
 		44E15A712B141C7400759A2B /* CameraContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44E15A702B141C7400759A2B /* CameraContainer.swift */; };
 		44EA24A72B2692B40019011B /* SelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44EA24A62B2692B40019011B /* SelectionView.swift */; };
+		44EA24AA2B26A2310019011B /* TouchBoundingBoxes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44EA24A92B26A2310019011B /* TouchBoundingBoxes.swift */; };
 		44F0D80E2B12F9760052BC2C /* CameraManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F0D80D2B12F9760052BC2C /* CameraManager.swift */; };
 		44F0D8102B12FA700052BC2C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F0D80F2B12FA700052BC2C /* ContentView.swift */; };
 		44F0D8122B12FAB70052BC2C /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F0D8112B12FAB70052BC2C /* CameraPreview.swift */; };
-		44F0D8142B12FDFE0052BC2C /* BoundingBoxesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F0D8132B12FDFE0052BC2C /* BoundingBoxesView.swift */; };
 		44F0D8162B1312EA0052BC2C /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F0D8152B1312EA0052BC2C /* AppState.swift */; };
 /* End PBXBuildFile section */
 
@@ -55,10 +55,10 @@
 		44E15A6E2B14147900759A2B /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		44E15A702B141C7400759A2B /* CameraContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraContainer.swift; sourceTree = "<group>"; };
 		44EA24A62B2692B40019011B /* SelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionView.swift; sourceTree = "<group>"; };
+		44EA24A92B26A2310019011B /* TouchBoundingBoxes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchBoundingBoxes.swift; sourceTree = "<group>"; };
 		44F0D80D2B12F9760052BC2C /* CameraManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraManager.swift; sourceTree = "<group>"; };
 		44F0D80F2B12FA700052BC2C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		44F0D8112B12FAB70052BC2C /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
-		44F0D8132B12FDFE0052BC2C /* BoundingBoxesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoundingBoxesView.swift; sourceTree = "<group>"; };
 		44F0D8152B1312EA0052BC2C /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -92,6 +92,7 @@
 		44CFDDF02B0B20CE0002ECAB /* DefineLens */ = {
 			isa = PBXGroup;
 			children = (
+				44EA24A82B26A2210019011B /* SelectionView */,
 				44E15A6D2B14146C00759A2B /* Settings */,
 				44E15A6A2B13E26500759A2B /* Utils */,
 				44E15A692B13E25600759A2B /* Data */,
@@ -103,7 +104,6 @@
 				44CFDDF82B0B20CF0002ECAB /* Preview Content */,
 				44F0D80F2B12FA700052BC2C /* ContentView.swift */,
 				44B60FF42B1AF5C3002D4FA7 /* ModeChanger.swift */,
-				44EA24A62B2692B40019011B /* SelectionView.swift */,
 			);
 			path = DefineLens;
 			sourceTree = "<group>";
@@ -121,7 +121,6 @@
 			children = (
 				44E15A702B141C7400759A2B /* CameraContainer.swift */,
 				44F0D8112B12FAB70052BC2C /* CameraPreview.swift */,
-				44F0D8132B12FDFE0052BC2C /* BoundingBoxesView.swift */,
 				44F0D80D2B12F9760052BC2C /* CameraManager.swift */,
 				448D05082B152E6000CF5AF9 /* CrosshairView.swift */,
 				448D050A2B152FB400CF5AF9 /* CaptureButton.swift */,
@@ -167,6 +166,15 @@
 				44E15A6E2B14147900759A2B /* SettingsView.swift */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		44EA24A82B26A2210019011B /* SelectionView */ = {
+			isa = PBXGroup;
+			children = (
+				44EA24A62B2692B40019011B /* SelectionView.swift */,
+				44EA24A92B26A2310019011B /* TouchBoundingBoxes.swift */,
+			);
+			path = SelectionView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -247,13 +255,13 @@
 				44B60FF52B1AF5C3002D4FA7 /* ModeChanger.swift in Sources */,
 				44CFDE032B0B2F490002ECAB /* DictionaryAPI.swift in Sources */,
 				44CFDE052B0B2FDA0002ECAB /* WordDefinitionCache.swift in Sources */,
-				44F0D8142B12FDFE0052BC2C /* BoundingBoxesView.swift in Sources */,
 				449F58FC2B21996A003EB16B /* WordList.swift in Sources */,
 				448D05092B152E6000CF5AF9 /* CrosshairView.swift in Sources */,
 				4442BB612B0C8151007FCB91 /* DictionaryResponse.swift in Sources */,
 				44F0D8122B12FAB70052BC2C /* CameraPreview.swift in Sources */,
 				442907F22B0ECE0E0023D2C6 /* DefinitionView.swift in Sources */,
 				44CFDDF22B0B20CE0002ECAB /* Main.swift in Sources */,
+				44EA24AA2B26A2310019011B /* TouchBoundingBoxes.swift in Sources */,
 				44E15A712B141C7400759A2B /* CameraContainer.swift in Sources */,
 				448D050D2B15981300CF5AF9 /* ImageUtils.swift in Sources */,
 				448D050B2B152FB400CF5AF9 /* CaptureButton.swift in Sources */,

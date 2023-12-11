@@ -49,9 +49,9 @@ struct ContentView: View {
                                 .edgesIgnoringSafeArea(.all)
                         }
 
-                        if appState.mode == .multi {
-                            BoundingBoxes()
-                        }
+//                        if appState.mode == .multi {
+//                            BoundingBoxes()
+//                        }
                     }
                     VStack {
                         Spacer()

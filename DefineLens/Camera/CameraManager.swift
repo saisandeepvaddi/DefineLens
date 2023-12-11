@@ -160,7 +160,10 @@ class CameraManager: NSObject, ObservableObject {
         captureSession.beginConfiguration()
         captureSession.sessionPreset = .photo
 
-        guard let videoInput = try? AVCaptureDeviceInput(device: videoDevice) else { return }
+        guard let videoInput = try? AVCaptureDeviceInput(device: videoDevice) else {
+            captureSession.commitConfiguration()
+            return
+        }
 
         if captureSession.canAddInput(videoInput) {
             captureSession.addInput(videoInput)
@@ -169,7 +172,10 @@ class CameraManager: NSObject, ObservableObject {
         setupCameraFocus()
 
         videoOutput = AVCaptureVideoDataOutput()
-        guard let videoOutput = videoOutput else { return }
+        guard let videoOutput = videoOutput else {
+            captureSession.commitConfiguration()
+            return
+        }
 
         if captureSession.canAddOutput(videoOutput) {
             captureSession.addOutput(videoOutput)
@@ -201,34 +207,6 @@ class CameraManager: NSObject, ObservableObject {
 
             captureSession.commitConfiguration()
             print("Switched to Photo")
-        }
-    }
-
-    func switchToVideoMode() {
-        sessionQueue.async { [weak self] in
-            guard let self = self, let captureSession = self.captureSession else { return }
-
-            captureSession.beginConfiguration()
-
-            if let photoOutput = self.photoOutput {
-                captureSession.removeOutput(photoOutput)
-            }
-
-            if videoOutput == nil {
-                videoOutput = AVCaptureVideoDataOutput()
-            }
-
-            guard let videoOutput = videoOutput else {
-                return
-            }
-
-            if captureSession.canAddOutput(videoOutput) {
-                captureSession.addOutput(videoOutput)
-                videoOutput.setSampleBufferDelegate(self, queue: self.sessionQueue)
-            }
-
-            captureSession.commitConfiguration()
-            print("Switched to video")
         }
     }
 

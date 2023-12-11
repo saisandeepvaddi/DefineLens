@@ -66,10 +66,6 @@ func createUIImage(from ciImage: CIImage) -> UIImage? {
 }
 
 func drawAnnotations(image: UIImage, observations: [VNRecognizedTextObservation]) {
-    guard let cgImage = image.cgImage else {
-        print("No cgImage to save image")
-        return
-    }
     UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
     let crosshairX = image.size.width / 2
     let crosshairY = image.size.height / 2
