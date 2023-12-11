@@ -227,14 +227,6 @@ class CameraManager: NSObject, ObservableObject {
                 videoOutput.setSampleBufferDelegate(self, queue: self.sessionQueue)
             }
 
-            if let connection = videoOutput.connection(with: .video) {
-                if connection.isVideoOrientationSupported {
-                    let orientation = uiDeviceOrientationToVideoOrientation(from: UIDevice.current.orientation)
-                    print("orientation: \(orientation)")
-                    connection.videoOrientation = orientation
-                }
-            }
-
             captureSession.commitConfiguration()
             print("Switched to video")
         }

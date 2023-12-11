@@ -18,6 +18,32 @@ func uiImageFromCVImageBuffer(imageBuffer: CVImageBuffer) -> UIImage? {
     return nil
 }
 
+func imageFromBuffer(imageBuffer: CVImageBuffer) -> UIImage? {
+    let ciImage = CIImage(cvPixelBuffer: imageBuffer)
+
+    // Setting orientation based on current device orientation
+    let orientation: UIImage.Orientation
+    switch UIDevice.current.orientation {
+        case .portrait:
+            orientation = .right
+        case .portraitUpsideDown:
+            orientation = .left
+        case .landscapeLeft:
+            orientation = .up
+        case .landscapeRight:
+            orientation = .down
+        default:
+            orientation = .right
+    }
+
+    let context = CIContext()
+    guard let cgImage = context.createCGImage(ciImage, from: ciImage.extent) else {
+        return nil
+    }
+
+    return UIImage(cgImage: cgImage, scale: 1.0, orientation: orientation)
+}
+
 func saveImageToPhotos(_ image: UIImage) {
     UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
 }
