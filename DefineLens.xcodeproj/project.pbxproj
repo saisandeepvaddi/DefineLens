@@ -25,6 +25,7 @@
 		44E15A6C2B13E27E00759A2B /* GeometryUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44E15A6B2B13E27E00759A2B /* GeometryUtils.swift */; };
 		44E15A6F2B14147900759A2B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44E15A6E2B14147900759A2B /* SettingsView.swift */; };
 		44E15A712B141C7400759A2B /* CameraContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44E15A702B141C7400759A2B /* CameraContainer.swift */; };
+		44EA24A72B2692B40019011B /* SelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44EA24A62B2692B40019011B /* SelectionView.swift */; };
 		44F0D80E2B12F9760052BC2C /* CameraManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F0D80D2B12F9760052BC2C /* CameraManager.swift */; };
 		44F0D8102B12FA700052BC2C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F0D80F2B12FA700052BC2C /* ContentView.swift */; };
 		44F0D8122B12FAB70052BC2C /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F0D8112B12FAB70052BC2C /* CameraPreview.swift */; };
@@ -53,6 +54,7 @@
 		44E15A6B2B13E27E00759A2B /* GeometryUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryUtils.swift; sourceTree = "<group>"; };
 		44E15A6E2B14147900759A2B /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		44E15A702B141C7400759A2B /* CameraContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraContainer.swift; sourceTree = "<group>"; };
+		44EA24A62B2692B40019011B /* SelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionView.swift; sourceTree = "<group>"; };
 		44F0D80D2B12F9760052BC2C /* CameraManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraManager.swift; sourceTree = "<group>"; };
 		44F0D80F2B12FA700052BC2C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		44F0D8112B12FAB70052BC2C /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 				44CFDDF82B0B20CF0002ECAB /* Preview Content */,
 				44F0D80F2B12FA700052BC2C /* ContentView.swift */,
 				44B60FF42B1AF5C3002D4FA7 /* ModeChanger.swift */,
+				44EA24A62B2692B40019011B /* SelectionView.swift */,
 			);
 			path = DefineLens;
 			sourceTree = "<group>";
@@ -257,6 +260,7 @@
 				44E15A6F2B14147900759A2B /* SettingsView.swift in Sources */,
 				44B60FF72B1AFE9A002D4FA7 /* BoundingBoxes.swift in Sources */,
 				449F58FE2B219DC6003EB16B /* TextUtils.swift in Sources */,
+				44EA24A72B2692B40019011B /* SelectionView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

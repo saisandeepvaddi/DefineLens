@@ -6,12 +6,12 @@
 //
 import AVFoundation
 import Combine
+import CoreVideo
 import SwiftUI
 import UIKit
 import Vision
 
-let FRAMES_PER_SECOND = 24.0
-
+typealias CaptureCallback = ([CustomRecognizedText]?, CVImageBuffer?) -> Void
 class CameraManager: NSObject, ObservableObject {
     var captureSession: AVCaptureSession?
     private var videoOutput: AVCaptureVideoDataOutput?
@@ -30,12 +30,12 @@ class CameraManager: NSObject, ObservableObject {
     @Published var isReady: Bool = false
     @Published var wordUnderCrosshair: String?
     let sessionQueue = DispatchQueue(label: "videoQueue")
-    var capturedWordCallback: (([CustomRecognizedText]?) -> Void)?
+    var capturedWordCallback: CaptureCallback?
     private var lastUpdateTime = Date()
     private let metadataOutput = AVCaptureMetadataOutput()
     private let metadataObjectsQueue = DispatchQueue(
         label: "metadata objects queue", attributes: [], target: nil)
-    private var currentMode: Modes = .single
+    private var currentMode: Modes = .selection
 
     private var videoDevice: AVCaptureDevice?
 
@@ -44,9 +44,6 @@ class CameraManager: NSObject, ObservableObject {
         super.init()
         print("initializing cameraManager")
         setupCameraDevice()
-//        sessionQueue.async {
-//            self.setupCaptureSession()
-//        }
     }
 
     func setupModeListener() {
@@ -95,7 +92,6 @@ class CameraManager: NSObject, ObservableObject {
         let authorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
         switch authorizationStatus {
         case .authorized:
-            print("Permissions authorized before")
             completion(true)
             return
         case .denied:
@@ -131,7 +127,6 @@ class CameraManager: NSObject, ObservableObject {
 
             videoDevice.isSubjectAreaChangeMonitoringEnabled = true
             if videoDevice.isFocusModeSupported(.continuousAutoFocus) {
-                print("Setting focus")
                 videoDevice.focusPointOfInterest = CGPoint(x: 0.5, y: 0.5)
                 videoDevice.focusMode = .continuousAutoFocus
             }
@@ -154,7 +149,7 @@ class CameraManager: NSObject, ObservableObject {
         }
     }
 
-   func setupCaptureSession() {
+    func setupCaptureSession() {
         guard let videoDevice = videoDevice else {
             logger.error("Device input not available..")
             return
@@ -232,13 +227,20 @@ class CameraManager: NSObject, ObservableObject {
                 videoOutput.setSampleBufferDelegate(self, queue: self.sessionQueue)
             }
 
+            if let connection = videoOutput.connection(with: .video) {
+                if connection.isVideoOrientationSupported {
+                    let orientation = uiDeviceOrientationToVideoOrientation(from: UIDevice.current.orientation)
+                    print("orientation: \(orientation)")
+                    connection.videoOrientation = orientation
+                }
+            }
+
             captureSession.commitConfiguration()
             print("Switched to video")
         }
     }
 
-    func captureWordInVideoMode(callback: @escaping (([CustomRecognizedText]?) -> Void)) {
-        print("Capturing in video mode")
+    func captureWordInVideoMode(callback: @escaping CaptureCallback) {
         guard videoOutput != nil else { return }
 
         // Since video buffer is continuously running, just setting the callback will trigger the word
@@ -278,8 +280,10 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
             let bounds = previewLayer.bounds
             if self?.currentMode == .single {
                 self?.processObservationsInSingleMode(observations, imageBounds: bounds)
-            } else {
+            } else if self?.currentMode == .multi {
                 self?.processObservationsInMultiMode(observations, imageBounds: bounds)
+            } else if self?.currentMode == .selection {
+                self?.processObservationsInSelectionMode(observations, imageBounds: bounds, imageBuffer: pixelBuffer)
             }
         }
         request.recognitionLevel = .accurate
@@ -319,7 +323,7 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
                                 let newWord = CustomRecognizedText(text: word, boundingBox: wordBoundingBoxTransformed)
                                 DispatchQueue.main.async {
                                     if let callback = self.capturedWordCallback {
-                                        callback([newWord])
+                                        callback([newWord], nil)
                                         self.capturedWordCallback = nil
                                     }
                                 }
@@ -365,7 +369,45 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
 
         DispatchQueue.main.async {
             if let callback = self.capturedWordCallback {
-                callback(detectedWords)
+                callback(detectedWords, nil)
+                self.capturedWordCallback = nil
+            }
+        }
+    }
+
+    func processObservationsInSelectionMode(_ observations: [VNRecognizedTextObservation], imageBounds: CGRect, imageBuffer: CVPixelBuffer) {
+        var detectedWords = [CustomRecognizedText]()
+        for observation in observations {
+            guard let candidate = observation.topCandidates(1).first else { continue }
+            let fullString = candidate.string
+            let words = fullString.split(separator: " ").map(String.init)
+            for word in words {
+                if let wordRange = fullString.range(of: word) {
+                    do {
+                        let boxObservation = try candidate.boundingBox(for: wordRange)
+                        guard let boxObservation = boxObservation else {
+                            continue
+                        }
+
+                        let wordBoundingBox = boxObservation.boundingBox
+                        let wordBoundingBoxTransformed = transformBoundingBox(
+                            wordBoundingBox, for: imageBounds)
+
+                        let newWord = CustomRecognizedText(
+                            text: word, boundingBox: wordBoundingBoxTransformed)
+
+                        detectedWords.append(newWord)
+
+                    } catch {
+                        print("Error in wordRange")
+                    }
+                }
+            }
+        }
+
+        DispatchQueue.main.async {
+            if let callback = self.capturedWordCallback {
+                callback(detectedWords, imageBuffer)
                 self.capturedWordCallback = nil
             }
         }

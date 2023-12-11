@@ -12,14 +12,12 @@ struct CaptureButton: View {
     @EnvironmentObject var appState: AppState
     @State private var capturedWords: [CustomRecognizedText] = []
     @State private var navigateToDefinition = false
+    @State private var cvImageBuffer: CVImageBuffer?
 
     var body: some View {
-//        let captureCallback = appState.mode == .single ?cameraManager.captureWordInPhotoMode : cameraManager.captureWordInVideoMode
-
         Button(action: {
-            cameraManager.captureWordInVideoMode { words in
+            cameraManager.captureWordInVideoMode { words, cvImageBuffer in
 
-//                print("Captured Word: \(word ?? "No word")")
                 guard let words = words else {
                     logger.error("No word captured")
                     return
@@ -30,6 +28,7 @@ struct CaptureButton: View {
                     return
                 }
 
+                self.cvImageBuffer = cvImageBuffer
                 self.capturedWords = words
                 self.navigateToDefinition = true
             }
@@ -43,14 +42,19 @@ struct CaptureButton: View {
                 .cornerRadius(20)
         }.padding()
             .onAppear {
-                print("Appearing")
                 self.capturedWords = []
                 self.navigateToDefinition = false
             }
 
         let firstWord = capturedWords.first?.text ?? ""
 
-        let destination = appState.mode == .single ? AnyView(DefinitionView(word: firstWord)) : AnyView(WordList(wordList: capturedWords))
+        let destination = appState.mode == .single ? AnyView(DefinitionView(word: firstWord)) :
+            appState.mode == .multi ?
+            AnyView(WordList(wordList: capturedWords)) :
+            AnyView(SelectionView(
+                items: capturedWords,
+                imageBuffer: cvImageBuffer
+            ))
 
         NavigationLink(destination: destination, isActive: self.$navigateToDefinition) {
             EmptyView()

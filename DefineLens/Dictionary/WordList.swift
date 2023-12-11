@@ -21,7 +21,3 @@ struct WordList: View {
         }
     }
 }
-
-#Preview {
-    WordList(wordList: [])
-}

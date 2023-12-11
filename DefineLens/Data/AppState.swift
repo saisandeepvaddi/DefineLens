@@ -5,6 +5,7 @@
 //  Created by Sai Sandeep Vaddi on 11/25/23.
 //
 
+import CoreVideo
 import Foundation
 
 struct CustomRecognizedText {
@@ -15,10 +16,11 @@ struct CustomRecognizedText {
 enum Modes: String, CaseIterable {
     case single = "Single"
     case multi = "Multi"
+    case selection = "Selection"
 }
 
 class AppState: ObservableObject {
     @Published var words: [CustomRecognizedText]?
     @Published var capturedWord: String?
-    @Published var mode: Modes = .single
+    @Published var mode: Modes = .selection
 }

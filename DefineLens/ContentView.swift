@@ -48,14 +48,14 @@ struct ContentView: View {
                             CrosshairView()
                                 .edgesIgnoringSafeArea(.all)
                         }
-                        ModeChanger()
-                            .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/ .all/*@END_MENU_TOKEN@*/)
+
                         if appState.mode == .multi {
                             BoundingBoxes()
                         }
                     }
                     VStack {
                         Spacer()
+                        ModeChanger()
                         CaptureButton()
                             .padding(10)
                     }

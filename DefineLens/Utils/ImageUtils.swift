@@ -9,20 +9,14 @@ import AVFoundation
 import UIKit
 import Vision
 
-// extension UIImage.Orientation {
-//    init(_ cgOrientation: CGImagePropertyOrientation) {
-//        switch cgOrientation {
-//        case .up: self = .up
-//        case .down: self = .down
-//        case .left: self = .left
-//        case .right: self = .right
-//        case .upMirrored: self = .upMirrored
-//        case .downMirrored: self = .downMirrored
-//        case .leftMirrored: self = .leftMirrored
-//        case .rightMirrored: self = .rightMirrored
-//        }
-//    }
-// }
+func uiImageFromCVImageBuffer(imageBuffer: CVImageBuffer) -> UIImage? {
+    let ciImage = CIImage(cvImageBuffer: imageBuffer)
+    let context = CIContext()
+    if let cgImage = context.createCGImage(ciImage, from: ciImage.extent) {
+        return UIImage(cgImage: cgImage)
+    }
+    return nil
+}
 
 func saveImageToPhotos(_ image: UIImage) {
     UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
@@ -210,4 +204,23 @@ func cgImagePropertyOrientation(from deviceOrientation: UIDeviceOrientation)
         @unknown default:
             return .up
     }
+}
+
+func uiDeviceOrientationToVideoOrientation(from deviceOrientation: UIDeviceOrientation) -> AVCaptureVideoOrientation {
+    var newOrientation: AVCaptureVideoOrientation
+
+    switch deviceOrientation {
+        case .portrait:
+            newOrientation = .portrait
+        case .portraitUpsideDown:
+            newOrientation = .portraitUpsideDown
+        case .landscapeLeft:
+            newOrientation = .landscapeRight
+        case .landscapeRight:
+            newOrientation = .landscapeLeft
+        default:
+            newOrientation = .portrait
+    }
+
+    return newOrientation
 }
