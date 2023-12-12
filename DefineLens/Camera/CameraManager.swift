@@ -261,7 +261,7 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
 
         let imageRequestHandler = VNImageRequestHandler(
             cvPixelBuffer: pixelBuffer,
-            orientation: cgImagePropertyOrientation(from: UIDevice.current.orientation))
+            orientation: cgImagePropertyOrientationFromDeviceOrientation())
 
         try? imageRequestHandler.perform([request])
     }
@@ -360,11 +360,11 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
                         }
 
                         let wordBoundingBox = boxObservation.boundingBox
-                        let wordBoundingBoxTransformed = transformBoundingBox(
-                            wordBoundingBox, for: imageBounds)
+//                        let wordBoundingBoxTransformed = transformBoundingBox(
+//                            wordBoundingBox, for: imageBounds)
 
                         let newWord = CustomRecognizedText(
-                            text: word, boundingBox: wordBoundingBoxTransformed)
+                            text: word, boundingBox: wordBoundingBox)
 
                         detectedWords.append(newWord)
 

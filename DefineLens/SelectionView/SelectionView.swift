@@ -24,15 +24,22 @@ struct SelectionView: View {
 
     var body: some View {
         if let uiImage = uiImage {
-            GeometryReader { _ in
-                ZStack {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .scaledToFit()
-                        .overlay(
-                            BoundingBoxes(boxes: self.items)
-                        )
+            GeometryReader { geometry in
+                let transformed: [CustomRecognizedText] = self.items.map { item in
+                    var newItem = CustomRecognizedText(text: item.text, boundingBox: item.boundingBox)
+                    newItem.boundingBox = transformBoundingBox(item.boundingBox, for: CGRect(
+                        origin: .zero, size: geometry.size
+                    ))
+                    return newItem
                 }
+
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .overlay(
+                        BoundingBoxes(boxes: transformed)
+                    )
             }
         } else {
             Text("No image found")

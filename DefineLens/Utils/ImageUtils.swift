@@ -42,6 +42,7 @@ func imageFromBuffer(imageBuffer: CVImageBuffer) -> UIImage? {
     }
 
     return UIImage(cgImage: cgImage, scale: 1.0, orientation: orientation)
+//    return UIImage(cgImage: cgImage)
 }
 
 func saveImageToPhotos(_ image: UIImage) {
@@ -209,9 +210,10 @@ func cgImagePropertyOrientationToUIImageOrientation(_ value: CGImagePropertyOrie
     }
 }
 
-func cgImagePropertyOrientation(from deviceOrientation: UIDeviceOrientation)
+func cgImagePropertyOrientationFromDeviceOrientation()
     -> CGImagePropertyOrientation
 {
+    let deviceOrientation = UIDevice.current.orientation
     switch deviceOrientation {
         case .portrait:
             return .right
