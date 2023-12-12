@@ -56,12 +56,11 @@ class CameraViewController: UIViewController {
 
             DispatchQueue.global(qos: .userInitiated).async {
                 self?.cameraManager.setupCaptureSession()
+                self?.cameraManager.captureSession?.startRunning()
                 DispatchQueue.main.async {
                     self?.addPreviewLayer()
                     self?.cameraManager.previewLayer?.frame = self?.view?.bounds ?? CGRect.zero
                 }
-
-                self?.cameraManager.captureSession?.startRunning()
             }
         }
     }
