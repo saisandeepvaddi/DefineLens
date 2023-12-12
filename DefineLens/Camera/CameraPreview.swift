@@ -25,7 +25,6 @@ class CameraViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        addPreviewLayer()
     }
 
     func showSettingsAlert() {
@@ -50,7 +49,6 @@ class CameraViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         cameraManager.checkCameraPermissions { [weak self] granted in
-            print("Granted: \(granted)")
             if !granted {
                 self?.showSettingsAlert()
                 return
@@ -62,6 +60,7 @@ class CameraViewController: UIViewController {
                     self?.addPreviewLayer()
                     self?.cameraManager.previewLayer?.frame = self?.view?.bounds ?? CGRect.zero
                 }
+
                 self?.cameraManager.captureSession?.startRunning()
             }
         }
@@ -74,7 +73,6 @@ class CameraViewController: UIViewController {
 
     func addPreviewLayer() {
         guard let captureSession = cameraManager.captureSession else {
-            print("No capture session")
             return
         }
         cameraManager.previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)

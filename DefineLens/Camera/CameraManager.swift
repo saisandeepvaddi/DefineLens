@@ -42,7 +42,7 @@ class CameraManager: NSObject, ObservableObject {
     init(appState: AppState? = nil) {
         self.appState = appState
         super.init()
-        print("initializing cameraManager")
+
         setupCameraDevice()
     }
 
@@ -53,31 +53,8 @@ class CameraManager: NSObject, ObservableObject {
         }
 
         modeSubscription = appState.$mode.sink { newMode in
-            print("mode changed: \(newMode)")
             if newMode != self.currentMode {
                 self.currentMode = newMode
-            }
-        }
-    }
-
-    func shouldUpdateBoundingBoxes() -> Bool {
-        let currentTime = Date()
-        let updateInterval = 1.0 / 10
-        if currentTime.timeIntervalSince(lastUpdateTime) > updateInterval {
-            lastUpdateTime = currentTime
-            return true
-        }
-        return false
-    }
-
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
-        if keyPath == "focusMode" {
-            if let newValue = change?[.newKey] {
-                print("Focus mode changed to: \(newValue)")
-            }
-        } else if keyPath == "lensPosition" {
-            if let newValue = change?[.newKey] {
-                print("Lens position changed to: \(newValue)")
             }
         }
     }
@@ -185,42 +162,11 @@ class CameraManager: NSObject, ObservableObject {
         captureSession.commitConfiguration()
     }
 
-    func switchToPhotoMode() {
-        sessionQueue.async { [weak self] in
-            guard let self = self, let captureSession = self.captureSession else { return }
-
-            captureSession.beginConfiguration()
-
-            if let videoOutput = self.videoOutput {
-                captureSession.removeOutput(videoOutput)
-            }
-
-            if photoOutput == nil {
-                photoOutput = AVCapturePhotoOutput()
-            }
-
-            guard let photoOutput = photoOutput else { return }
-
-            if captureSession.canAddOutput(photoOutput) {
-                captureSession.addOutput(photoOutput)
-            }
-
-            captureSession.commitConfiguration()
-            print("Switched to Photo")
-        }
-    }
-
     func captureWordInVideoMode(callback: @escaping CaptureCallback) {
         guard videoOutput != nil else { return }
 
         // Since video buffer is continuously running, just setting the callback will trigger the word
         capturedWordCallback = callback
-    }
-
-    func startCaptureSession() {
-        sessionQueue.async { [weak self] in
-            self?.captureSession?.startRunning()
-        }
     }
 
     func stopCaptureSession() {

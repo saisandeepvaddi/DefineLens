@@ -25,11 +25,10 @@ struct SelectionView: View {
     var body: some View {
         if let uiImage = uiImage {
             GeometryReader { geometry in
+                var _ = print("image orientation: \(uiImage.imageOrientation)")
                 let transformed: [CustomRecognizedText] = self.items.map { item in
                     var newItem = CustomRecognizedText(text: item.text, boundingBox: item.boundingBox)
-                    newItem.boundingBox = transformBoundingBox(item.boundingBox, for: CGRect(
-                        origin: .zero, size: geometry.size
-                    ))
+                    newItem.boundingBox = transformBoundingBox(item.boundingBox, for: uiImage.size, in: geometry.size, orientation: uiImage.imageOrientation)
                     return newItem
                 }
 
@@ -41,6 +40,7 @@ struct SelectionView: View {
                         BoundingBoxes(boxes: transformed)
                     )
             }
+            .ignoresSafeArea(.all)
         } else {
             Text("No image found")
         }

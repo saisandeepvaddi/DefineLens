@@ -9,15 +9,6 @@ import AVFoundation
 import UIKit
 import Vision
 
-func uiImageFromCVImageBuffer(imageBuffer: CVImageBuffer) -> UIImage? {
-    let ciImage = CIImage(cvImageBuffer: imageBuffer)
-    let context = CIContext()
-    if let cgImage = context.createCGImage(ciImage, from: ciImage.extent) {
-        return UIImage(cgImage: cgImage)
-    }
-    return nil
-}
-
 func imageFromBuffer(imageBuffer: CVImageBuffer) -> UIImage? {
     let ciImage = CIImage(cvPixelBuffer: imageBuffer)
 
@@ -42,7 +33,6 @@ func imageFromBuffer(imageBuffer: CVImageBuffer) -> UIImage? {
     }
 
     return UIImage(cgImage: cgImage, scale: 1.0, orientation: orientation)
-//    return UIImage(cgImage: cgImage)
 }
 
 func saveImageToPhotos(_ image: UIImage) {
@@ -214,6 +204,7 @@ func cgImagePropertyOrientationFromDeviceOrientation()
     -> CGImagePropertyOrientation
 {
     let deviceOrientation = UIDevice.current.orientation
+    print("orientation at image recog: \(deviceOrientation)")
     switch deviceOrientation {
         case .portrait:
             return .right
@@ -247,4 +238,23 @@ func uiDeviceOrientationToVideoOrientation(from deviceOrientation: UIDeviceOrien
     }
 
     return newOrientation
+}
+
+public func exifOrientationFromDeviceOrientation() -> CGImagePropertyOrientation {
+    let curDeviceOrientation = UIDevice.current.orientation
+    let exifOrientation: CGImagePropertyOrientation
+
+    switch curDeviceOrientation {
+        case UIDeviceOrientation.portraitUpsideDown: // Device oriented vertically, home button on the top
+            exifOrientation = .left
+        case UIDeviceOrientation.landscapeLeft: // Device oriented horizontally, home button on the right
+            exifOrientation = .upMirrored
+        case UIDeviceOrientation.landscapeRight: // Device oriented horizontally, home button on the left
+            exifOrientation = .down
+        case UIDeviceOrientation.portrait: // Device oriented vertically, home button on the bottom
+            exifOrientation = .up
+        default:
+            exifOrientation = .up
+    }
+    return exifOrientation
 }
