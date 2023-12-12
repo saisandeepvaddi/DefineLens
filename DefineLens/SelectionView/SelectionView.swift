@@ -28,7 +28,7 @@ struct SelectionView: View {
                 var _ = print("image orientation: \(uiImage.imageOrientation)")
                 let transformed: [CustomRecognizedText] = self.items.map { item in
                     var newItem = CustomRecognizedText(text: item.text, boundingBox: item.boundingBox)
-                    newItem.boundingBox = transformBoundingBox(item.boundingBox, for: uiImage.size, in: geometry.size, orientation: uiImage.imageOrientation)
+                    newItem.boundingBox = transformBoundingBox(item.boundingBox, for: uiImage.size, in: geometry.size)
                     return newItem
                 }
 

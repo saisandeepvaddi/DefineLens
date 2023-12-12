@@ -207,7 +207,7 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
 
         let imageRequestHandler = VNImageRequestHandler(
             cvPixelBuffer: pixelBuffer,
-            orientation: cgImagePropertyOrientationFromDeviceOrientation())
+            orientation: .right)
 
         try? imageRequestHandler.perform([request])
     }

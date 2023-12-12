@@ -56,38 +56,9 @@ func rotateRect(_ rect: CGRect) -> CGRect {
     return rect.applying(transform)
 }
 
-func transformBoundingBox(_ boundingBox: CGRect, for imageSize: CGSize, in viewSize: CGSize, orientation: UIImage.Orientation) -> CGRect {
+func transformBoundingBox(_ boundingBox: CGRect, for imageSize: CGSize, in viewSize: CGSize) -> CGRect {
     // First, we need to adjust the bounding box based on the image's orientation
     var adjustedBoundingBox = boundingBox
-//    switch orientation {
-//        case .right: // 90 degrees clockwise
-//            adjustedBoundingBox = CGRect(
-//                x: boundingBox.origin.y,
-//                y: boundingBox.origin.x,
-//                width: boundingBox.height,
-//                height: boundingBox.width
-//            )
-//        case .left: // 90 degrees counter-clockwise
-//            adjustedBoundingBox = CGRect(
-//                x: 1 - boundingBox.origin.y - boundingBox.height,
-//                y: 1 - boundingBox.origin.x - boundingBox.width,
-//                width: boundingBox.height,
-//                height: boundingBox.width
-//            )
-//        case .down: // 180 degrees
-//            adjustedBoundingBox = CGRect(
-//                x: 1 - boundingBox.origin.x - boundingBox.width,
-//                y: 1 - boundingBox.origin.y - boundingBox.height,
-//                width: boundingBox.width,
-//                height: boundingBox.height
-//            )
-//        case .up: // No rotation
-//            // No adjustment needed
-//            break
-//        // Add cases for mirrored orientations if necessary
-//        default:
-//            break
-//    }
 
     adjustedBoundingBox.origin.y = 1 - adjustedBoundingBox.origin.y - adjustedBoundingBox.height
 
