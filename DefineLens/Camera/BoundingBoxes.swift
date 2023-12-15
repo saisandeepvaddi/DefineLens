@@ -25,6 +25,10 @@ struct BoundingBoxes: View {
                     path.addRect(box)
                 }
                 .stroke(selectableTexts[index].isSelected ? Color.blue : Color.red, lineWidth: 2)
+                .onTapGesture {
+                    selectableTexts[index].isSelected.toggle()
+                    updateFinalSelection()
+                }
             }
         }
         .gesture(
@@ -62,5 +66,10 @@ struct BoundingBoxes: View {
         for index in selectableTexts.indices {
             selectableTexts[index].isSelected = false
         }
+    }
+
+    private func updateFinalSelection() {
+        let selectedTexts = selectableTexts.filter { $0.isSelected }.map { $0.original.text }
+        selectionManager.selectedText = selectedTexts.joined(separator: " ")
     }
 }
