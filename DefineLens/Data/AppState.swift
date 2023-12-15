@@ -13,6 +13,7 @@ struct CustomRecognizedText {
     var boundingBox: CGRect
 }
 
+
 enum Modes: String, CaseIterable {
     case single = "Single"
     case multi = "Multi"
