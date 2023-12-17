@@ -16,7 +16,8 @@ class TextSelectionManager: ObservableObject {
 struct BoundingBoxes: View {
     @Binding var selectableTexts: [SelectableText]
     @ObservedObject var selectionManager: TextSelectionManager
-
+    var zoomScale: CGFloat
+    var offset: CGSize
     var body: some View {
         ZStack {
             ForEach(selectableTexts.indices, id: \.self) { index in
@@ -25,7 +26,10 @@ struct BoundingBoxes: View {
                     path.addRect(box)
                 }
                 .stroke(selectableTexts[index].isSelected ? Color.blue : Color.red, lineWidth: 2)
+                .scaleEffect(CGSize(width: 1.0 * zoomScale, height: 1.0 * zoomScale))
+                .offset(offset)
                 .onTapGesture {
+                    print("Tapping: \(selectableTexts[index].original.text)")
                     selectableTexts[index].isSelected.toggle()
                     updateFinalSelection()
                 }
@@ -43,7 +47,10 @@ struct BoundingBoxes: View {
     }
 
     private func updateSelection(from start: CGPoint, to end: CGPoint) {
-        let selectionRect = CGRect(x: min(start.x, end.x), y: min(start.y, end.y), width: abs(end.x - start.x), height: abs(end.y - start.y))
+        let selectionRect = CGRect(
+            x: min(start.x, end.x), y: min(start.y, end.y), width: abs(end.x - start.x),
+            height: abs(end.y - start.y)
+        )
         let isDraggingRight = end.x >= start.x
 
         for index in selectableTexts.indices {
@@ -59,7 +66,7 @@ struct BoundingBoxes: View {
     private func finalizeSelection() {
         let selectedTexts = selectableTexts.filter { $0.isSelected }.map { $0.original.text }
         selectionManager.selectedText = selectedTexts.joined(separator: " ")
-//        clearSelection()
+        //        clearSelection()
     }
 
     private func clearSelection() {

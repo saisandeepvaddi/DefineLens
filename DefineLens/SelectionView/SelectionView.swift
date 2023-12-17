@@ -17,6 +17,12 @@ struct SelectionView: View {
     @GestureState private var currentScale: CGFloat = 1.0
     @State private var finalScale: CGFloat = 1.0
     @State private var geometrySize: CGSize = .zero
+
+    @State private var zoomScale: CGFloat = 1.0
+    @State private var offset: CGSize = .zero
+
+    @State private var imageSize: CGSize = .zero
+
     private var uiImage: UIImage? {
         guard let imageBuffer = imageBuffer else {
             print("No image buffer")
@@ -28,16 +34,20 @@ struct SelectionView: View {
     var body: some View {
         if let uiImage = uiImage {
             GeometryReader { geometry in
-
                 Image(uiImage: uiImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: geometry.size.width, height: geometry.size.height)
+                    .scaleEffect(self.zoomScale)
+                    .offset(self.offset)
+                    .gesture(self.magnificationGesture)
                     .overlay(
-                        BoundingBoxes(selectableTexts: self.$selectableItems, selectionManager: self.selectionManager)
+                        BoundingBoxes(selectableTexts: self.$selectableItems, selectionManager: self.selectionManager, zoomScale: self.zoomScale, offset: self.offset)
+//                            .scaleEffect(self.zoomScale)
                     )
                     .onAppear {
                         self.geometrySize = geometry.size
+                        self.imageSize = uiImage.size
                     }
             }
             .onAppear {
@@ -49,10 +59,21 @@ struct SelectionView: View {
         }
     }
 
+    var magnificationGesture: some Gesture {
+        MagnificationGesture()
+            .onChanged { value in
+                self.zoomScale = value
+            }
+            .onEnded { _ in
+//                self.updateSelectableItems(with: self.items, size: self.imageSize)
+            }
+    }
+
     private func updateSelectableItems(with items: [CustomRecognizedText], size: CGSize) {
+        let currentImageSize = CGSize(width: size.width * self.zoomScale, height: size.height * self.zoomScale)
         self.selectableItems = self.items.map { item in
             var newItem = CustomRecognizedText(text: item.text, boundingBox: item.boundingBox)
-            newItem.boundingBox = transformBoundingBox(item.boundingBox, for: size, in: self.geometrySize)
+            newItem.boundingBox = transformBoundingBox(item.boundingBox, for: currentImageSize, in: self.geometrySize)
 
             return SelectableText(original: newItem, isSelected: false)
         }
