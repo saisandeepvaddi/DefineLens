@@ -26,7 +26,7 @@ struct BoundingBoxes: View {
                     path.addRect(box)
                 }
                 .stroke(selectableTexts[index].isSelected ? Color.blue : Color.red, lineWidth: 2)
-                .scaleEffect(CGSize(width: 1.0 * zoomScale, height: 1.0 * zoomScale))
+                .scaleEffect(zoomScale)
                 .offset(offset)
                 .onTapGesture {
                     print("Tapping: \(selectableTexts[index].original.text)")
@@ -35,15 +35,15 @@ struct BoundingBoxes: View {
                 }
             }
         }
-        .gesture(
-            DragGesture(minimumDistance: 0)
-                .onChanged { value in
-                    updateSelection(from: value.startLocation, to: value.location)
-                }
-                .onEnded { _ in
-                    finalizeSelection()
-                }
-        )
+//        .simultaneousGesture(
+//            DragGesture(minimumDistance: 0)
+//                .onChanged { value in
+//                    updateSelection(from: value.startLocation, to: value.location)
+//                }
+//                .onEnded { _ in
+//                    finalizeSelection()
+//                }
+//        )
     }
 
     private func updateSelection(from start: CGPoint, to end: CGPoint) {

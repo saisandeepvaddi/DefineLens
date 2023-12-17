@@ -18,10 +18,16 @@ struct SelectionView: View {
     @State private var finalScale: CGFloat = 1.0
     @State private var geometrySize: CGSize = .zero
 
+    @State private var currentZoom: CGFloat = 0.0
+    @State private var totalZoom: CGFloat = 1.0
     @State private var zoomScale: CGFloat = 1.0
+
     @State private var offset: CGSize = .zero
 
     @State private var imageSize: CGSize = .zero
+
+    @State private var dragOffset: CGSize = .zero
+    @State private var rotationAngle: Angle = .zero
 
     private var uiImage: UIImage? {
         guard let imageBuffer = imageBuffer else {
@@ -38,12 +44,21 @@ struct SelectionView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: geometry.size.width, height: geometry.size.height)
-                    .scaleEffect(self.zoomScale)
-                    .offset(self.offset)
+                    .scaleEffect(self.currentZoom + self.totalZoom)
+                    .offset(self.offset + self.dragOffset)
+//                    .rotationEffect(self.rotationAngle)
                     .gesture(self.magnificationGesture)
+//                    .accessibilityZoomAction { action in
+//                        if action.direction == .zoomIn {
+//                            self.totalZoom += 1
+//                        } else {
+//                            self.totalZoom -= 1
+//                        }
+//                    }
+                    .simultaneousGesture(self.dragGesture)
+//                    .simultaneousGesture(self.rotationGesture)
                     .overlay(
-                        BoundingBoxes(selectableTexts: self.$selectableItems, selectionManager: self.selectionManager, zoomScale: self.zoomScale, offset: self.offset)
-//                            .scaleEffect(self.zoomScale)
+                        BoundingBoxes(selectableTexts: self.$selectableItems, selectionManager: self.selectionManager, zoomScale: self.totalZoom, offset: self.offset)
                     )
                     .onAppear {
                         self.geometrySize = geometry.size
@@ -62,15 +77,36 @@ struct SelectionView: View {
     var magnificationGesture: some Gesture {
         MagnificationGesture()
             .onChanged { value in
-                self.zoomScale = value
+//                self.zoomScale = value
+                self.currentZoom = value.magnitude - 1
             }
             .onEnded { _ in
-//                self.updateSelectableItems(with: self.items, size: self.imageSize)
+                self.totalZoom += self.currentZoom
+                self.currentZoom = 0
+                self.updateSelectableItems(with: self.items, size: self.imageSize)
+            }
+    }
+
+    private var dragGesture: some Gesture {
+        DragGesture()
+            .onChanged { value in
+                self.dragOffset = value.translation
+            }
+            .onEnded { _ in
+                self.offset += self.dragOffset
+                self.dragOffset = .zero
+            }
+    }
+
+    private var rotationGesture: some Gesture {
+        RotationGesture()
+            .onChanged { angle in
+                self.rotationAngle = angle
             }
     }
 
     private func updateSelectableItems(with items: [CustomRecognizedText], size: CGSize) {
-        let currentImageSize = CGSize(width: size.width * self.zoomScale, height: size.height * self.zoomScale)
+        let currentImageSize = CGSize(width: size.width * self.totalZoom, height: size.height * self.totalZoom)
         self.selectableItems = self.items.map { item in
             var newItem = CustomRecognizedText(text: item.text, boundingBox: item.boundingBox)
             newItem.boundingBox = transformBoundingBox(item.boundingBox, for: currentImageSize, in: self.geometrySize)
@@ -85,5 +121,15 @@ extension CGSize {
         let widthScale = self.width / otherSize.width
         let heightScale = self.height / otherSize.width
         return CGSize(width: widthScale, height: heightScale)
+    }
+}
+
+extension CGSize {
+    static func += (left: inout CGSize, right: CGSize) {
+        left = CGSize(width: left.width + right.width, height: left.height + right.height)
+    }
+
+    static func + (left: CGSize, right: CGSize) -> CGSize {
+        CGSize(width: left.width + right.width, height: left.height + right.height)
     }
 }
