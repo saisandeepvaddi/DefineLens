@@ -19,22 +19,22 @@ struct BoundingBoxes: View {
     var zoomScale: CGFloat
     var offset: CGSize
     var body: some View {
-        ZStack {
-            ForEach(selectableTexts.indices, id: \.self) { index in
-                let box = selectableTexts[index].original.boundingBox
-                Path { path in
-                    path.addRect(box)
-                }
-                .stroke(selectableTexts[index].isSelected ? Color.blue : Color.red, lineWidth: 2)
-                .scaleEffect(zoomScale)
-                .offset(offset)
-                .onTapGesture {
-                    print("Tapping: \(selectableTexts[index].original.text)")
-                    selectableTexts[index].isSelected.toggle()
-                    updateFinalSelection()
-                }
+//        ZStack {
+        ForEach(selectableTexts.indices, id: \.self) { index in
+            let box = selectableTexts[index].original.boundingBox
+            Path { path in
+                path.addRect(box)
+            }
+            .stroke(selectableTexts[index].isSelected ? Color.blue : Color.red, lineWidth: 2)
+            .scaleEffect(zoomScale)
+            .offset(offset)
+            .onTapGesture {
+                print("Tapping: \(selectableTexts[index].original.text)")
+                selectableTexts[index].isSelected.toggle()
+                updateFinalSelection()
             }
         }
+//        }
 //        .simultaneousGesture(
 //            DragGesture(minimumDistance: 0)
 //                .onChanged { value in

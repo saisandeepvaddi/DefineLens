@@ -48,14 +48,10 @@ struct SelectionView: View {
                     .offset(self.offset + self.dragOffset)
 //                    .rotationEffect(self.rotationAngle)
                     .gesture(self.magnificationGesture)
-//                    .accessibilityZoomAction { action in
-//                        if action.direction == .zoomIn {
-//                            self.totalZoom += 1
-//                        } else {
-//                            self.totalZoom -= 1
-//                        }
-//                    }
-                    .simultaneousGesture(self.dragGesture)
+//                    .simultaneousGesture(self.dragGesture)
+//                    .gesture(TapGesture().onEnded { value in
+//                        print("value: \(value)")
+//                    })
 //                    .simultaneousGesture(self.rotationGesture)
                     .overlay(
                         BoundingBoxes(selectableTexts: self.$selectableItems, selectionManager: self.selectionManager, zoomScale: self.totalZoom, offset: self.offset)
@@ -77,7 +73,7 @@ struct SelectionView: View {
     var magnificationGesture: some Gesture {
         MagnificationGesture()
             .onChanged { value in
-//                self.zoomScale = value
+
                 self.currentZoom = value.magnitude - 1
             }
             .onEnded { _ in
