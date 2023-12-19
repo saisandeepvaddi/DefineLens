@@ -19,7 +19,6 @@ struct BoundingBoxes: View {
     var zoomScale: CGFloat
     var offset: CGSize
     var body: some View {
-//        ZStack {
         ForEach(selectableTexts.indices, id: \.self) { index in
             let box = selectableTexts[index].original.boundingBox
             Path { path in
@@ -34,16 +33,6 @@ struct BoundingBoxes: View {
                 updateFinalSelection()
             }
         }
-//        }
-//        .simultaneousGesture(
-//            DragGesture(minimumDistance: 0)
-//                .onChanged { value in
-//                    updateSelection(from: value.startLocation, to: value.location)
-//                }
-//                .onEnded { _ in
-//                    finalizeSelection()
-//                }
-//        )
     }
 
     private func updateSelection(from start: CGPoint, to end: CGPoint) {

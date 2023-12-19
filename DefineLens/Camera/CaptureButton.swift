@@ -18,13 +18,8 @@ struct CaptureButton: View {
         Button(action: {
             cameraManager.captureWordInVideoMode { words, cvImageBuffer in
 
-                guard let words = words else {
+                guard let words = words, words.count > 0 else {
                     logger.error("No word captured")
-                    return
-                }
-
-                guard let word = words.first else {
-                    print("no words")
                     return
                 }
 
